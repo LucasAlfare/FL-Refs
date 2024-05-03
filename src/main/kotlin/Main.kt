@@ -103,6 +103,74 @@ fun Application.configureRouting() {
       } catch (e: Exception) {
         return@post call.respond(HttpStatusCode.BadRequest, "serialization error")
       }
+
+      return@post try {
+        AppDB.query {
+          // try get/create franchise
+          val franchiseId = try {
+            Franchises
+              .selectAll()
+              .where { Franchises.name eq uploadRequestDTO.relatedFranchiseName }
+              .singleOrNull()
+              .let { result ->
+                if (result != null) {
+                  result[Franchises.id].value
+                } else {
+                  Franchises.insertAndGetId { it[name] = uploadRequestDTO.relatedFranchiseName }.value
+                }
+              }
+          } catch (e: Exception) {
+            return@query call.respond(
+              HttpStatusCode.InternalServerError,
+              "error searching/creating requested franchise"
+            )
+          }
+
+          // try insert reference info
+          val referenceId = try {
+            References.insertAndGetId {
+              it[title] = uploadRequestDTO.title
+              it[description] = uploadRequestDTO.description
+              it[relatedFranchiseId] = franchiseId
+              it[concatenation] = uploadRequestDTO.createConcatenation()
+            }.value
+          } catch (e: Exception) {
+            return@query call.respond(HttpStatusCode.InternalServerError, "error inserting the reference")
+          }
+
+          // try to generate thumbnail
+          val thumbnailBytes = try {
+            generateThumbnail(uploadRequestDTO.rawReferenceData)
+          } catch (e: Exception) {
+            return@query call.respond(
+              HttpStatusCode.InternalServerError,
+              "error on creating thumbnail: invalid raw image data"
+            )
+          }
+
+          // try to insert binary data
+          ImagesData.insert {
+            it[rawReferenceData] = ExposedBlob(uploadRequestDTO.rawReferenceData)
+            it[rawThumbnailData] = ExposedBlob(thumbnailBytes)
+            it[relatedFranchiseId] = franchiseId
+            it[relatedReferenceId] = referenceId
+          }
+
+          // return created
+          return@query call.respond(HttpStatusCode.Created, referenceId)
+        }
+      } catch (e: Exception) {
+        return@post call.respond(HttpStatusCode.InternalServerError, "error creating data")
+      }
+    }
+
+    /*
+    post("/upload") {
+      val uploadRequestDTO = try {
+        call.receive<UploadRequestDTO>()
+      } catch (e: Exception) {
+        return@post call.respond(HttpStatusCode.BadRequest, "serialization error")
+      }
       val franchiseId = try {
         AppDB.query {
           Franchises
@@ -154,6 +222,7 @@ fun Application.configureRouting() {
         return@post call.respond(HttpStatusCode.InternalServerError, "error when inserting images data")
       }
     }
+     */
 
     get("/page={requested_page}") {
       val pageSize = 10
