@@ -22,7 +22,7 @@ class RoutesTests {
     transaction(AppDB.DB) {
       SchemaUtils.createMissingTablesAndColumns(
         Franchises,
-        References,
+        ReferencesInfo,
         ImagesData
       )
     }
@@ -33,7 +33,7 @@ class RoutesTests {
     transaction(AppDB.DB) {
       SchemaUtils.drop(
         Franchises,
-        References,
+        ReferencesInfo,
         ImagesData
       )
     }

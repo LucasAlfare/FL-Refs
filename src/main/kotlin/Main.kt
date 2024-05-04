@@ -29,18 +29,18 @@ object Franchises : IntIdTable("Franchises") {
   val name = text("name").uniqueIndex()
 }
 
-object References : IntIdTable("References") {
+object ReferencesInfo : IntIdTable("References") {
   val title = text("title").uniqueIndex()
   val description = text("description")
   val relatedFranchiseId = integer("related_franchise_id").references(Franchises.id)
-  val concatenation = text("concatenation")
+  val concatenation = text("concatenation") // used in by-term filtering/selecting
 }
 
 object ImagesData : IntIdTable("ImagesData") {
   val rawReferenceData = blob("raw_reference_data")
   val rawThumbnailData = blob("raw_thumbnail_data")
   val relatedFranchiseId = integer("related_franchise_id").references(Franchises.id)
-  val relatedReferenceId = integer("related_reference_id").references(References.id)
+  val relatedReferenceId = integer("related_reference_id").references(ReferencesInfo.id)
 }
 
 @Serializable
@@ -92,7 +92,7 @@ fun initDatabase() {
     transaction(AppDB.DB) {
       SchemaUtils.createMissingTablesAndColumns(
         Franchises,
-        References,
+        ReferencesInfo,
         ImagesData
       )
     }
@@ -140,14 +140,14 @@ fun Application.configureRouting() {
 
           // try insert reference info
           val referenceId = try {
-            References.insertAndGetId {
+            ReferencesInfo.insertAndGetId {
               it[title] = uploadRequestDTO.title
               it[description] = uploadRequestDTO.description
               it[relatedFranchiseId] = franchiseId
               it[concatenation] = uploadRequestDTO.createConcatenation()
             }.value
           } catch (e: Exception) {
-            return@query call.respond(HttpStatusCode.InternalServerError, "error inserting the reference")
+            return@query call.respond(HttpStatusCode.InternalServerError, "error inserting the reference info")
           }
 
           // try to generate thumbnail
@@ -185,15 +185,15 @@ fun Application.configureRouting() {
       val searchOffset = maxOf(0, ((requestedPage - 1) * pageSize) - 1)
 
       val items = AppDB.query {
-        (Franchises leftJoin References leftJoin ImagesData)
+        (Franchises leftJoin ReferencesInfo leftJoin ImagesData)
           .selectAll()
-          .orderBy(References.id to SortOrder.ASC)
+          .orderBy(ReferencesInfo.id to SortOrder.ASC)
           .limit(n = pageSize, offset = searchOffset)
           .map {
             ReferenceItem(
-              referenceId = it[References.id].value,
-              title = it[References.title],
-              description = it[References.description],
+              referenceId = it[ReferencesInfo.id].value,
+              title = it[ReferencesInfo.title],
+              description = it[ReferencesInfo.description],
               franchiseName = it[Franchises.name],
               rawThumbnailData = it[ImagesData.rawThumbnailData].bytes
             )
@@ -222,16 +222,16 @@ fun Application.configureRouting() {
       }
 
       val items = AppDB.query {
-        (Franchises leftJoin References leftJoin ImagesData)
+        (Franchises leftJoin ReferencesInfo leftJoin ImagesData)
           .selectAll()
-          .where { References.concatenation like "%$term%" }
-          .orderBy(References.id to SortOrder.ASC)
+          .where { ReferencesInfo.concatenation like "%$term%" }
+          .orderBy(ReferencesInfo.id to SortOrder.ASC)
           .limit(n = pageSize, offset = searchOffset)
           .map {
             ReferenceItem(
-              referenceId = it[References.id].value,
-              title = it[References.title],
-              description = it[References.description],
+              referenceId = it[ReferencesInfo.id].value,
+              title = it[ReferencesInfo.title],
+              description = it[ReferencesInfo.description],
               franchiseName = it[Franchises.name],
               rawThumbnailData = it[ImagesData.rawThumbnailData].bytes
             )
@@ -248,8 +248,8 @@ fun Application.configureRouting() {
 }
 
 // ============= MISC =============
-private fun generateThumbnail(rawImageBytes: ByteArray, width: Int = 200, height: Int = 200): ByteArray {
-  val originalImage: BufferedImage = ImageIO.read(ByteArrayInputStream(rawImageBytes))
+private fun generateThumbnail(imageBytes: ByteArray, width: Int = 200, height: Int = 200): ByteArray {
+  val originalImage: BufferedImage = ImageIO.read(ByteArrayInputStream(imageBytes))
   val resizedImage: Image = originalImage.getScaledInstance(width, height, Image.SCALE_DEFAULT)
   val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
   val graphics = bufferedImage.createGraphics()
