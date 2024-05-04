@@ -23,6 +23,8 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 
+// ============= TABLES =============
+
 object Franchises : IntIdTable("Franchises") {
   val name = text("name").uniqueIndex()
 }
@@ -65,6 +67,8 @@ data class ReferenceItem(
   val rawThumbnailData: ByteArray
 )
 
+// ============= WEB SERVER =============
+
 // simple in-memory caching. TODO: consider using custom database stuff for this
 val cache = mutableMapOf<String, List<ReferenceItem>>()
 val cacheMutex = Mutex()
@@ -100,6 +104,8 @@ fun Application.configureSerialization() {
     json(Json { isLenient = false })
   }
 }
+
+// ============= ROUTES =============
 
 fun Application.configureRouting() {
   routing {
@@ -169,66 +175,6 @@ fun Application.configureRouting() {
         return@post call.respond(HttpStatusCode.InternalServerError, "error creating data")
       }
     }
-
-    /*
-    post("/upload") {
-      val uploadRequestDTO = try {
-        call.receive<UploadRequestDTO>()
-      } catch (e: Exception) {
-        return@post call.respond(HttpStatusCode.BadRequest, "serialization error")
-      }
-      val franchiseId = try {
-        AppDB.query {
-          Franchises
-            .selectAll()
-            .where { Franchises.name eq uploadRequestDTO.relatedFranchiseName }
-            .singleOrNull()
-            .let { result ->
-              if (result != null) {
-                result[Franchises.id].value
-              } else {
-                Franchises.insertAndGetId { it[name] = uploadRequestDTO.relatedFranchiseName }.value
-              }
-            }
-        }
-      } catch (e: Exception) {
-        return@post call.respond(HttpStatusCode.InternalServerError, "error searching/creating requested franchise")
-      }
-      val referenceId = try {
-        AppDB.query {
-          References.insertAndGetId {
-            it[title] = uploadRequestDTO.title
-            it[description] = uploadRequestDTO.description
-            it[relatedFranchiseId] = franchiseId
-            it[concatenation] = uploadRequestDTO.createConcatenation()
-          }
-        }.value
-      } catch (e: Exception) {
-        return@post call.respond(HttpStatusCode.InternalServerError, "error inserting the reference")
-      }
-      val thumbnailBytes = try {
-        generateThumbnail(uploadRequestDTO.rawReferenceData)
-      } catch (e: Exception) {
-        return@post call.respond(
-          HttpStatusCode.InternalServerError,
-          "error on creating thumbnail: invalid raw image data"
-        )
-      }
-      try {
-        AppDB.query {
-          ImagesData.insert {
-            it[rawReferenceData] = ExposedBlob(uploadRequestDTO.rawReferenceData)
-            it[rawThumbnailData] = ExposedBlob(thumbnailBytes)
-            it[relatedFranchiseId] = franchiseId
-            it[relatedReferenceId] = referenceId
-          }
-        }
-        return@post call.respond(HttpStatusCode.Created, referenceId)
-      } catch (e: Exception) {
-        return@post call.respond(HttpStatusCode.InternalServerError, "error when inserting images data")
-      }
-    }
-     */
 
     get("/") {
       val pageSize = 10
@@ -301,20 +247,18 @@ fun Application.configureRouting() {
   }
 }
 
-// aux auto-gen
-private fun generateThumbnail(
-  rawImageBytes: ByteArray,
-  width: Int = 200,
-  height: Int = 200
-): ByteArray {
+// ============= MISC =============
+private fun generateThumbnail(rawImageBytes: ByteArray, width: Int = 200, height: Int = 200): ByteArray {
   val originalImage: BufferedImage = ImageIO.read(ByteArrayInputStream(rawImageBytes))
   val resizedImage: Image = originalImage.getScaledInstance(width, height, Image.SCALE_DEFAULT)
   val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
   val graphics = bufferedImage.createGraphics()
   graphics.drawImage(resizedImage, 0, 0, null)
   graphics.dispose()
+
   val outputStream = ByteArrayOutputStream()
   ImageIO.write(bufferedImage, "jpg", outputStream)
   outputStream.close()
+
   return outputStream.toByteArray()
 }
