@@ -9,6 +9,8 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -62,6 +64,10 @@ data class ReferenceItem(
   val franchiseName: String,
   val rawThumbnailData: ByteArray
 )
+
+// simple in-memory caching. TODO: consider using custom database stuff for this
+val cache = mutableMapOf<String, List<ReferenceItem>>()
+val cacheMutex = Mutex()
 
 fun main() {
   initDatabase()
@@ -264,6 +270,11 @@ fun Application.configureRouting() {
       val pageSize = 10
       val searchOffset = maxOf(0, ((requestedPage - 1) * pageSize) - 1)
 
+      val cachedItems = cache[term]
+      if (cachedItems != null) {
+        return@get call.respond(HttpStatusCode.OK, cachedItems)
+      }
+
       val items = AppDB.query {
         (Franchises leftJoin References leftJoin ImagesData)
           .selectAll()
@@ -279,6 +290,10 @@ fun Application.configureRouting() {
               rawThumbnailData = it[ImagesData.rawThumbnailData].bytes
             )
           }
+      }
+
+      cacheMutex.withLock {
+        cache[term] = items
       }
 
       return@get call.respond(HttpStatusCode.OK, items)
