@@ -9,10 +9,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
 import kotlin.random.Random
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class RoutesTests {
 
@@ -31,7 +28,7 @@ class RoutesTests {
     }
   }
 
-  @Test
+  @AfterTest
   fun dispose() {
     transaction(AppDB.DB) {
       SchemaUtils.drop(
