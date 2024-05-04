@@ -224,16 +224,19 @@ fun Application.configureRouting() {
     }
      */
 
-    get("/page={requested_page}") {
+    get("/") {
       val pageSize = 10
-      val requestedPage = (call.parameters["requested_page"])?.toLong() ?: 1L
-      val searchOffset = (requestedPage - 1) * pageSize
+      val requestedPage = (call.request.queryParameters["page"] ?: return@get call.respond(
+        HttpStatusCode.BadRequest,
+        "bad url [page]."
+      )).toLong()
+      val searchOffset = maxOf(0, ((requestedPage - 1) * pageSize) - 1)
 
       val items = AppDB.query {
         (Franchises leftJoin References leftJoin ImagesData)
           .selectAll()
           .orderBy(References.id to SortOrder.ASC)
-          .limit(n = pageSize, offset = maxOf(0, searchOffset - 1))
+          .limit(n = pageSize, offset = searchOffset)
           .map {
             ReferenceItem(
               referenceId = it[References.id].value,
@@ -248,9 +251,37 @@ fun Application.configureRouting() {
       return@get call.respond(HttpStatusCode.OK, items)
     }
 
-    // TODO: exactly equals to general GET, but should be cashed
-    get("/term={term}") {
-      return@get call.respond(HttpStatusCode.NotImplemented, "search by term not implemented yet.")
+    get("/by_term") {
+      val term =
+        call.request.queryParameters["term"] ?: return@get call.respond(HttpStatusCode.BadRequest, "bad url [term].")
+
+      val requestedPage = 1L
+      (call.request.queryParameters["page"] ?: return@get call.respond(
+        HttpStatusCode.BadRequest,
+        "bad url [page]."
+      )).toLong()
+
+      val pageSize = 10
+      val searchOffset = maxOf(0, ((requestedPage - 1) * pageSize) - 1)
+
+      val items = AppDB.query {
+        (Franchises leftJoin References leftJoin ImagesData)
+          .selectAll()
+          .where { References.concatenation like "%$term%" }
+          .orderBy(References.id to SortOrder.ASC)
+          .limit(n = pageSize, offset = searchOffset)
+          .map {
+            ReferenceItem(
+              referenceId = it[References.id].value,
+              title = it[References.title],
+              description = it[References.description],
+              franchiseName = it[Franchises.name],
+              rawThumbnailData = it[ImagesData.rawThumbnailData].bytes
+            )
+          }
+      }
+
+      return@get call.respond(HttpStatusCode.OK, items)
     }
   }
 }

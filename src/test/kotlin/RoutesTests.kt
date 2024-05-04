@@ -95,12 +95,44 @@ class RoutesTests {
       }
     }
 
-    val requestResult = c.get("/page=3")
+    val requestResult = c.get("/?page=3")
     assertEquals(HttpStatusCode.OK, requestResult.status)
 
     val items = requestResult.body<List<ReferenceItem>>()
-    items.map { "ReferenceItem(id=${it.referenceId})" }.forEach { println(it) }
+    //items.map { "ReferenceItem(id=${it.referenceId})" }.forEach { println(it) }
 
     assertTrue(items.size == 10)
+  }
+
+  @Test
+  fun `test get by term`() = testApplication {
+    application {
+      configureSerialization()
+      configureRouting()
+    }
+    val c = createClient {
+      install(ContentNegotiation) {
+        json(Json { isLenient = false })
+      }
+    }
+
+    val nextStrangeTestTitle = "ga bi ru"
+
+    c.post("/upload") {
+      val dto = UploadRequestDTO(
+        title = nextStrangeTestTitle,
+        description = "this is a test",
+        relatedFranchiseName = "Testing",
+        rawReferenceData = File("img.jpg").readBytes()
+      )
+
+      contentType(ContentType.Application.Json)
+      setBody(dto)
+    }
+
+    val requestResult = c.get("/by_term?term=${nextStrangeTestTitle}&page=1")
+    val items = requestResult.body<List<ReferenceItem>>()
+//    items.map { "ReferenceItem(id=${it.referenceId})" }.forEach { println(it) }
+    assertTrue(items.size == 1)
   }
 }
