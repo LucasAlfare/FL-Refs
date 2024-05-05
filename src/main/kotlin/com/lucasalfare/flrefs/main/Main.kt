@@ -1,11 +1,14 @@
 @file:Suppress("ArrayInDataClass")
 
+package com.lucasalfare.flrefs.main
+
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -77,6 +80,7 @@ fun main() {
   initDatabase()
 
   embeddedServer(Netty, port = 9999) {
+    configureCORS()
     configureSerialization()
     configureRouting()
   }.start(true)
@@ -84,10 +88,10 @@ fun main() {
 
 fun initDatabase() {
   AppDB.initialize(
-    jdbcUrl = SQLITE_URL,
-    jdbcDriverClassName = SQLITE_DRIVER,
-    username = "",
-    password = ""
+    jdbcUrl = System.getenv("DB_JDBC_URL") ?: SQLITE_URL,
+    jdbcDriverClassName = System.getenv("DB_JDBC_DRIVER") ?: SQLITE_DRIVER,
+    username = System.getenv("DB_USERNAME") ?: "",
+    password = System.getenv("DB_PASSWORD") ?: ""
   ) {
     transaction(AppDB.DB) {
       SchemaUtils.createMissingTablesAndColumns(
@@ -96,6 +100,13 @@ fun initDatabase() {
         ImagesData
       )
     }
+  }
+}
+
+fun Application.configureCORS() {
+  install(CORS) {
+    anyHost()
+    allowHeader(HttpHeaders.ContentType)
   }
 }
 

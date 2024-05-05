@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  minha-api:
+    container_name: fl-refs-container
+    build: .
+    environment:
+      DB_JDBC_URL: ${DB_JDBC_URL}
+      DB_JDBC_DRIVER: ${DB_JDBC_DRIVER}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "9999:9999"

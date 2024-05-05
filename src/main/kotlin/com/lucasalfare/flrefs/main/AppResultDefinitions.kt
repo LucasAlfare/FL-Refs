@@ -1,3 +1,5 @@
+package com.lucasalfare.flrefs.main
+
 interface AppError
 
 interface AppResult<out D, out E : AppError>

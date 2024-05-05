@@ -5,7 +5,7 @@
         </encoder>
     </appender>
     <!-- root level:  may be set to TRACE again, if needed...  -->
-    <root level="OFF">
+    <root level="TRACE">
         <appender-ref ref="STDOUT"/>
     </root>
     <logger name="org.eclipse.jetty" level="OFF"/>

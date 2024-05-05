@@ -1,3 +1,5 @@
+package com.lucasalfare.flrefs.main
+
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -7,9 +9,13 @@ import io.ktor.server.testing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.Assertions.assertTrue
 import java.io.File
 import kotlin.random.Random
-import kotlin.test.*
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class RoutesTests {
 
