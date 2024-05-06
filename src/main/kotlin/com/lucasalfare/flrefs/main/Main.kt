@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
+import kotlin.collections.set
 
 // ============= TABLES =============
 
@@ -80,19 +81,27 @@ fun main() {
   initDatabase()
 
   embeddedServer(Netty, port = 9999) {
-    configureCORS()
     configureSerialization()
+    configureCORS()
     configureRouting()
   }.start(true)
 }
 
-fun initDatabase() {
+fun initDatabase(dropTablesOnStart: Boolean = false) {
   AppDB.initialize(
     jdbcUrl = System.getenv("DB_JDBC_URL") ?: SQLITE_URL,
     jdbcDriverClassName = System.getenv("DB_JDBC_DRIVER") ?: SQLITE_DRIVER,
     username = System.getenv("DB_USERNAME") ?: "",
     password = System.getenv("DB_PASSWORD") ?: ""
   ) {
+    if (dropTablesOnStart) {
+      SchemaUtils.drop(
+        Franchises,
+        ReferencesInfo,
+        ImagesData
+      )
+    }
+
     transaction(AppDB.DB) {
       SchemaUtils.createMissingTablesAndColumns(
         Franchises,
@@ -189,10 +198,7 @@ fun Application.configureRouting() {
 
     get("/") {
       val pageSize = 10
-      val requestedPage = (call.request.queryParameters["page"] ?: return@get call.respond(
-        HttpStatusCode.BadRequest,
-        "bad url [page]."
-      )).toLong()
+      val requestedPage = (call.request.queryParameters["page"] ?: "1").toLong()
       val searchOffset = maxOf(0, ((requestedPage - 1) * pageSize) - 1)
 
       val items = AppDB.query {
