@@ -2,6 +2,8 @@
 
 package com.lucasalfare.flrefs.main
 
+import com.lucasalfare.flrefs.main.exposed.ExposedGetAllHandler
+import com.lucasalfare.flrefs.main.exposed.ExposedUploadHandler
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -17,8 +19,9 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Image
 import java.awt.image.BufferedImage
@@ -63,7 +66,7 @@ data class UploadRequestDTO(
 }
 
 @Serializable
-data class ReferenceItem(
+data class ReferenceInfoItem(
   val referenceId: Int,
   val title: String,
   val description: String,
@@ -74,7 +77,7 @@ data class ReferenceItem(
 // ============= WEB SERVER =============
 
 // simple in-memory caching. TODO: consider using custom database stuff for this
-val cache = mutableMapOf<String, List<ReferenceItem>>()
+val cache = mutableMapOf<String, List<ReferenceInfoItem>>()
 val cacheMutex = Mutex()
 
 fun main() {
@@ -137,6 +140,15 @@ fun Application.configureRouting() {
       }
 
       return@post try {
+        val result = ExposedUploadHandler.uploadReferenceImage(uploadRequestDTO)
+        call.respond(status = result.statusCode, message = result.data)
+      } catch (e: AppException) {
+        e.printStackTrace()
+        call.respond(status = e.statusCode, e.customMessage)
+      }
+
+      /*
+      return@post try {
         AppDB.query {
           // try get/create franchise
           val franchiseId = try {
@@ -194,9 +206,20 @@ fun Application.configureRouting() {
       } catch (e: Exception) {
         return@post call.respond(HttpStatusCode.InternalServerError, "error creating data")
       }
+       */
     }
 
     get("/") {
+      val requestedPage = (call.request.queryParameters["page"] ?: "1").toInt()
+      return@get try {
+        val result = ExposedGetAllHandler.getAllReferencesInfo(requestedPage)
+        call.respond(status = result.statusCode, message = result.data)
+      } catch (e: AppException) {
+        e.printStackTrace()
+        call.respond(status = e.statusCode, message = e.customMessage)
+      }
+
+      /*
       val pageSize = 10
       val requestedPage = (call.request.queryParameters["page"] ?: "1").toLong()
       val searchOffset = maxOf(0, ((requestedPage - 1) * pageSize) - 1)
@@ -207,7 +230,7 @@ fun Application.configureRouting() {
           .orderBy(ReferencesInfo.id to SortOrder.ASC)
           .limit(n = pageSize, offset = searchOffset)
           .map {
-            ReferenceItem(
+            ReferenceInfoItem(
               referenceId = it[ReferencesInfo.id].value,
               title = it[ReferencesInfo.title],
               description = it[ReferencesInfo.description],
@@ -218,6 +241,7 @@ fun Application.configureRouting() {
       }
 
       return@get call.respond(HttpStatusCode.OK, items)
+       */
     }
 
     get("/by_term") {
@@ -245,7 +269,7 @@ fun Application.configureRouting() {
           .orderBy(ReferencesInfo.id to SortOrder.ASC)
           .limit(n = pageSize, offset = searchOffset)
           .map {
-            ReferenceItem(
+            ReferenceInfoItem(
               referenceId = it[ReferencesInfo.id].value,
               title = it[ReferencesInfo.title],
               description = it[ReferencesInfo.description],
@@ -265,7 +289,7 @@ fun Application.configureRouting() {
 }
 
 // ============= MISC =============
-private fun generateThumbnail(imageBytes: ByteArray, width: Int = 200, height: Int = 200): ByteArray {
+fun generateThumbnail(imageBytes: ByteArray, width: Int = 200, height: Int = 200): ByteArray {
   val originalImage: BufferedImage = ImageIO.read(ByteArrayInputStream(imageBytes))
   val resizedImage: Image = originalImage.getScaledInstance(width, height, Image.SCALE_DEFAULT)
   val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)

@@ -104,7 +104,7 @@ class RoutesTests {
     val requestResult = c.get("/?page=3")
     assertEquals(HttpStatusCode.OK, requestResult.status)
 
-    val items = requestResult.body<List<ReferenceItem>>()
+    val items = requestResult.body<List<ReferenceInfoItem>>()
     //items.map { "ReferenceItem(id=${it.referenceId})" }.forEach { println(it) }
 
     assertTrue(items.size == 10)
@@ -137,7 +137,7 @@ class RoutesTests {
     }
 
     val requestResult = c.get("/by_term?term=${nextStrangeTestTitle}&page=1")
-    val items = requestResult.body<List<ReferenceItem>>()
+    val items = requestResult.body<List<ReferenceInfoItem>>()
 //    items.map { "ReferenceItem(id=${it.referenceId})" }.forEach { println(it) }
     assertTrue(items.size == 1)
   }
