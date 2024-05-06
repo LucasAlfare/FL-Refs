@@ -52,7 +52,7 @@ object AppDB {
   ): HikariDataSource {
     // Configuring HikariCP with provided parameters.
     val hikariConfig = HikariConfig().apply {
-      if (jdbcDriverClassName == SQLITE_DRIVER)
+      if (jdbcDriverClassName == Constants.SQLITE_DRIVER)
         this.transactionIsolation = IsolationLevel.TRANSACTION_SERIALIZABLE.name
 
       this.jdbcUrl = jdbcUrl

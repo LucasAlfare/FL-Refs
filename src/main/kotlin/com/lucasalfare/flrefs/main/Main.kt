@@ -89,8 +89,8 @@ fun main() {
 
 fun initDatabase(dropTablesOnStart: Boolean = false) {
   AppDB.initialize(
-    jdbcUrl = System.getenv("DB_JDBC_URL") ?: SQLITE_URL,
-    jdbcDriverClassName = System.getenv("DB_JDBC_DRIVER") ?: SQLITE_DRIVER,
+    jdbcUrl = System.getenv("DB_JDBC_URL") ?: Constants.SQLITE_URL,
+    jdbcDriverClassName = System.getenv("DB_JDBC_DRIVER") ?: Constants.SQLITE_DRIVER,
     username = System.getenv("DB_USERNAME") ?: "",
     password = System.getenv("DB_PASSWORD") ?: ""
   ) {
