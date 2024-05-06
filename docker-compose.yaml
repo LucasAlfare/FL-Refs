@@ -4,6 +4,7 @@ services:
   minha-api:
     container_name: fl-refs-container
     build: .
+    # variables values obtained from local/private .env file
     environment:
       DB_JDBC_URL: ${DB_JDBC_URL}
       DB_JDBC_DRIVER: ${DB_JDBC_DRIVER}
