@@ -1,8 +1,6 @@
 package com.lucasalfare.flrefs.main
 
-import com.lucasalfare.flrefs.main.exposed.Franchises
-import com.lucasalfare.flrefs.main.exposed.ImagesData
-import com.lucasalfare.flrefs.main.exposed.ReferencesInfo
+import com.lucasalfare.flrefs.main.exposed.*
 import com.lucasalfare.flrefs.main.routes.homeListRoute
 import com.lucasalfare.flrefs.main.routes.searchByTermRoute
 import com.lucasalfare.flrefs.main.routes.uploadRoute
@@ -17,6 +15,10 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+
+val getAllHandler: AppService = ExposedGetAllHandler
+val getByTermHandler: AppService = ExposedGetByTermHandler
+val uploadHandler: AppService = ExposedUploadHandler
 
 fun main() {
   initDatabase()

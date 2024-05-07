@@ -2,6 +2,7 @@ package com.lucasalfare.flrefs.main.routes
 
 import com.lucasalfare.flrefs.main.AppException
 import com.lucasalfare.flrefs.main.exposed.ExposedGetByTermHandler
+import com.lucasalfare.flrefs.main.getByTermHandler
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -22,7 +23,7 @@ fun Routing.searchByTermRoute() {
     }
 
     return@get try {
-      val result = ExposedGetByTermHandler.getReferencesInfoByTerm(term = term, page = requestedPage)
+      val result = getByTermHandler.getReferencesInfoByTerm(term = term, page = requestedPage)
       call.respond(status = result.statusCode, message = result.data)
     } catch (e: AppException) {
       e.printStackTrace()

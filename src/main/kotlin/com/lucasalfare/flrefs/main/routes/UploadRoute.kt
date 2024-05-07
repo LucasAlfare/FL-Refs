@@ -1,8 +1,8 @@
 package com.lucasalfare.flrefs.main.routes
 
 import com.lucasalfare.flrefs.main.AppException
-import com.lucasalfare.flrefs.main.exposed.ExposedUploadHandler
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
+import com.lucasalfare.flrefs.main.uploadHandler
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -18,7 +18,7 @@ fun Routing.uploadRoute() {
     }
 
     return@post try {
-      val result = ExposedUploadHandler.uploadReferenceImage(uploadRequestDTO)
+      val result = uploadHandler.uploadReferenceImage(uploadRequestDTO)
       call.respond(status = result.statusCode, message = result.data)
     } catch (e: AppException) {
       e.printStackTrace()
