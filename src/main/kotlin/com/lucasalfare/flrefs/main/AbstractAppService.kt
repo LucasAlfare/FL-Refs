@@ -1,5 +1,6 @@
 package com.lucasalfare.flrefs.main
 
+import com.lucasalfare.flrefs.main.model.OriginalRawImage
 import com.lucasalfare.flrefs.main.model.ReferenceInfoItem
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 
@@ -10,6 +11,8 @@ interface AppService {
   suspend fun getAllReferencesInfo(page: Int = 1): AppResult<List<ReferenceInfoItem>>
 
   suspend fun getReferencesInfoByTerm(term: String, page: Int = 1): AppResult<List<ReferenceInfoItem>>
+
+  suspend fun getReferenceInfoItemById(id: Int): AppResult<OriginalRawImage>
 }
 
 abstract class AbstractAppService : AppService {
@@ -22,6 +25,10 @@ abstract class AbstractAppService : AppService {
   }
 
   override suspend fun getReferencesInfoByTerm(term: String, page: Int): AppResult<List<ReferenceInfoItem>> {
+    TODO("Abstract function has not implemented. Using concrete implementation instead.")
+  }
+
+  override suspend fun getReferenceInfoItemById(id: Int): AppResult<OriginalRawImage> {
     TODO("Abstract function has not implemented. Using concrete implementation instead.")
   }
 }

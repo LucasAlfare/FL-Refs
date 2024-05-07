@@ -1,6 +1,7 @@
 package com.lucasalfare.flrefs.main
 
 import com.lucasalfare.flrefs.main.exposed.*
+import com.lucasalfare.flrefs.main.routes.downloadRoute
 import com.lucasalfare.flrefs.main.routes.homeListRoute
 import com.lucasalfare.flrefs.main.routes.searchByTermRoute
 import com.lucasalfare.flrefs.main.routes.uploadRoute
@@ -19,6 +20,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 val getAllHandler: AppService = ExposedGetAllHandler
 val getByTermHandler: AppService = ExposedGetByTermHandler
 val uploadHandler: AppService = ExposedUploadHandler
+val getReferenceInfoItemByIdHandler: AppService = ExposedGetReferenceInfoItemByIdHandler
 
 fun main() {
   initDatabase()
@@ -75,5 +77,6 @@ fun Application.configureRouting() {
     uploadRoute()
     homeListRoute()
     searchByTermRoute()
+    downloadRoute()
   }
 }

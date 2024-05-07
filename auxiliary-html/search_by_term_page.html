@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search References</title>
 </head>
-
 <body>
 <h2>Search References</h2>
 
@@ -19,45 +17,46 @@
 <script>
     // Função para fazer a requisição GET com o termo de busca
     function searchReferences() {
-      var searchTerm = document.getElementById("searchTerm").value;
-      var url = "http://localhost:9999/by_term?term=" + encodeURIComponent(searchTerm) + "&page=1";
+        var searchTerm = document.getElementById("searchTerm").value;
+        var url = "http://localhost:9999/?by_term=" + encodeURIComponent(searchTerm) + "page=1";
 
-      fetch(url)
+        fetch(url)
         .then(response => response.json())
         .then(data => {
-          // Limpa a lista de referências
-          var referenceList = document.getElementById("referenceList");
-          referenceList.innerHTML = "";
+            // Limpa a lista de referências
+            var referenceList = document.getElementById("referenceList");
+            referenceList.innerHTML = "";
 
-          // Itera sobre os resultados retornados e os adiciona à lista
-          data.forEach(reference => {
-            var listItem = document.createElement("li");
-            listItem.innerHTML = `
-                        <strong>Title:</strong> ${reference.title}<br>
-                        <strong>Description:</strong> ${reference.description}<br>
-                        <strong>Franchise Name:</strong> ${reference.franchiseName}<br>
-                        <img src="data:image/png;base64,${arrayBufferToBase64(reference.rawThumbnailData)}" alt="Thumbnail"><br>
-                    `;
-            referenceList.appendChild(listItem);
-          });
+            // Itera sobre os resultados retornados e os adiciona à lista
+            data.forEach(reference => {
+                var listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <strong>Title:</strong> ${reference.title}<br>
+                    <strong>Description:</strong> ${reference.description}<br>
+                    <strong>Franchise Name:</strong> ${reference.franchiseName}<br>
+                    <a href="http://localhost:9999/download/${reference.referenceId}" download>
+                        <img src="data:image/png;base64,${arrayBufferToBase64(reference.rawThumbnailData)}" alt="Thumbnail">
+                    </a><br>
+                `;
+                referenceList.appendChild(listItem);
+            });
         })
         .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred. Please try again later.');
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
         });
     }
 
     // Função para converter ArrayBuffer para base64
     function arrayBufferToBase64(buffer) {
-      var binary = '';
-      var bytes = new Uint8Array(buffer);
-      var len = bytes.byteLength;
-      for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return window.btoa(binary);
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
     }
 </script>
 </body>
-
 </html>
