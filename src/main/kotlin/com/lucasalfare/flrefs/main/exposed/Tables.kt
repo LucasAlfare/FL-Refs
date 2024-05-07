@@ -13,7 +13,7 @@ object ReferencesInfo : IntIdTable("References") {
   val concatenation = text("concatenation") // used in by-term filtering/selecting
 }
 
-// TODO: we must to keep track of original image format
+// TODO: we must to keep track of original image format info
 object ImagesData : IntIdTable("ImagesData") {
   val rawReferenceData = blob("raw_reference_data")
   val rawThumbnailData = blob("raw_thumbnail_data")
