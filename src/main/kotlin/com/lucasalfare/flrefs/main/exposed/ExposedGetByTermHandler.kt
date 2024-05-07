@@ -1,6 +1,9 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.*
+import com.lucasalfare.flrefs.main.AbstractAppService
+import com.lucasalfare.flrefs.main.AppDB
+import com.lucasalfare.flrefs.main.AppException
+import com.lucasalfare.flrefs.main.AppResult
 import com.lucasalfare.flrefs.main.model.ReferenceInfoItem
 import io.ktor.http.*
 import kotlinx.coroutines.sync.Mutex
@@ -11,6 +14,7 @@ import org.jetbrains.exposed.sql.selectAll
 object ExposedGetByTermHandler : AbstractAppService() {
 
   // simple in-memory caching. TODO: consider using custom database/lib stuff for this
+  // TODO: consider not caching the entire thumbnail bytes, only info
   private val cache = mutableMapOf<String, List<ReferenceInfoItem>>()
   private val cacheMutex = Mutex()
 
