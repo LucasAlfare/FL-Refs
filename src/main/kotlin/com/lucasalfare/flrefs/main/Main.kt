@@ -20,7 +20,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 val getAllHandler: AppService = ExposedGetAllHandler
 val getByTermHandler: AppService = ExposedGetByTermHandler
 val uploadHandler: AppService = ExposedUploadHandler
-val getReferenceInfoItemByIdHandler: AppService = ExposedGetReferenceInfoItemByIdHandler
+val getInfoByIdHandler: AppService = ExposedGetInfoByIdHandler
 
 fun main() {
   initDatabase()

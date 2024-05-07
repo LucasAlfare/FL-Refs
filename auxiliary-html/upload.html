@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Form</title>
+</head>
+<body>
+<h1>Upload Form</h1>
+<form id="uploadForm">
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title"><br>
+    <label for="description">Description:</label><br>
+    <textarea id="description" name="description"></textarea><br>
+    <label for="relatedFranchiseName">Related Franchise Name:</label><br>
+    <input type="text" id="relatedFranchiseName" name="relatedFranchiseName"><br>
+    <label for="rawReferenceData">Raw Reference Data:</label><br>
+    <input type="file" id="rawReferenceData" name="rawReferenceData"><br><br>
+    <button type="button" onclick="submitForm()">Submit</button>
+</form>
+
+<script>
+    function submitForm() {
+        const form = document.getElementById('uploadForm');
+        const formData = new FormData(form);
+
+        const uploadRequest = {
+            title: formData.get('title'),
+            description: formData.get('description'),
+            relatedFranchiseName: formData.get('relatedFranchiseName'),
+            rawReferenceData: null // We'll set this value in the next step
+        };
+
+        const fileInput = document.getElementById('rawReferenceData');
+        const file = fileInput.files[0];
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const arrayBuffer = event.target.result;
+            const byteArray = new Int8Array(arrayBuffer);
+            uploadRequest.rawReferenceData = Array.from(byteArray);
+            console.log(uploadRequest);
+
+            // Make POST request to server
+            fetch('http://localhost:9999/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(uploadRequest)
+            })
+            .then(response => {
+                console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Upload successful:', data);
+                // Handle success response
+            })
+            .catch(error => {
+                console.error('Error during upload:', error);
+                // Handle error
+            });
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
+</script>
+</body>
+</html>

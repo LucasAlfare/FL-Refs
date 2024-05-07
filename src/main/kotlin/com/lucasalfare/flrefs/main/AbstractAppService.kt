@@ -12,7 +12,7 @@ interface AppService {
 
   suspend fun getReferencesInfoByTerm(term: String, page: Int = 1): AppResult<List<ReferenceInfoItem>>
 
-  suspend fun getReferenceInfoItemById(id: Int): AppResult<OriginalRawImage>
+  suspend fun getOriginalImageById(id: Int): AppResult<OriginalRawImage>
 }
 
 abstract class AbstractAppService : AppService {
@@ -28,7 +28,7 @@ abstract class AbstractAppService : AppService {
     TODO("Abstract function has not implemented. Using concrete implementation instead.")
   }
 
-  override suspend fun getReferenceInfoItemById(id: Int): AppResult<OriginalRawImage> {
+  override suspend fun getOriginalImageById(id: Int): AppResult<OriginalRawImage> {
     TODO("Abstract function has not implemented. Using concrete implementation instead.")
   }
 }
