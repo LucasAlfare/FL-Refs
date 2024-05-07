@@ -5,6 +5,7 @@ WORKDIR /app
 # gradle assemble is used to build without running tests
 RUN cd /app; gradle clean; gradle assemble --no-daemon
 
+# multi build is used to discard gradle stuff after build
 FROM openjdk:17-alpine
 EXPOSE 9999
 RUN mkdir /app
