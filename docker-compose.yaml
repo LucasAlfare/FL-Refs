@@ -11,4 +11,4 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "9999:9999"
+      - "80:80"
