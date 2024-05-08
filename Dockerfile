@@ -7,7 +7,7 @@ RUN cd /app; gradle clean; gradle assemble --no-daemon
 
 # multi build is used to discard gradle stuff after build
 FROM openjdk:17-alpine
-EXPOSE 9999
+EXPOSE 80
 RUN mkdir /app
 COPY --from=my_build /app /app
 ENTRYPOINT ["java", "-jar", "/app/build/libs/FL-Refs-1.0.jar"]
