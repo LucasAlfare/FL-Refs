@@ -25,7 +25,7 @@ val getInfoByIdHandler: AppService = ExposedGetInfoByIdHandler
 fun main() {
   initDatabase()
 
-  embeddedServer(Netty, port = 9999) {
+  embeddedServer(Netty, port = 80) {
     configureSerialization()
     configureCORS()
     configureRouting()
