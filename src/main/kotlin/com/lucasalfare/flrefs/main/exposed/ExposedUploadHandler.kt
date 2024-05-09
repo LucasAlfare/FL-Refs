@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 
-object ExposedUploadHandler : AbstractAppService() {
+object ExposedUploadHandler : AppServiceAdapter() {
 
   override suspend fun uploadReferenceImage(uploadRequestDTO: UploadRequestDTO): AppResult<Int> {
     return try {

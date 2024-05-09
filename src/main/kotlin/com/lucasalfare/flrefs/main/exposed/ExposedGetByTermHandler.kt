@@ -1,6 +1,6 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AbstractAppService
+import com.lucasalfare.flrefs.main.AppServiceAdapter
 import com.lucasalfare.flrefs.main.AppDB
 import com.lucasalfare.flrefs.main.AppException
 import com.lucasalfare.flrefs.main.AppResult
@@ -11,7 +11,7 @@ import kotlinx.coroutines.sync.withLock
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.selectAll
 
-object ExposedGetByTermHandler : AbstractAppService() {
+object ExposedGetByTermHandler : AppServiceAdapter() {
 
   // simple in-memory caching. TODO: consider using custom database/lib stuff for this
   // TODO: consider not caching the entire thumbnail bytes, only info

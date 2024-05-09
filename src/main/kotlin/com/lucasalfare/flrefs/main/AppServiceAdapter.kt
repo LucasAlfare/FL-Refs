@@ -17,7 +17,7 @@ interface AppService {
   suspend fun deleteRegistryById(id: Int): AppResult<Unit>
 }
 
-abstract class AbstractAppService : AppService {
+abstract class AppServiceAdapter : AppService {
   override suspend fun uploadReferenceImage(uploadRequestDTO: UploadRequestDTO): AppResult<Int> {
     TODO("Abstract function has not implemented. Use concrete implementation instead.")
   }

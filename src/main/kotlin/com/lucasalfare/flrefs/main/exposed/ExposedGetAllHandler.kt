@@ -1,6 +1,6 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AbstractAppService
+import com.lucasalfare.flrefs.main.AppServiceAdapter
 import com.lucasalfare.flrefs.main.AppDB
 import com.lucasalfare.flrefs.main.AppResult
 import com.lucasalfare.flrefs.main.model.ReferenceInfoItem
@@ -8,7 +8,7 @@ import io.ktor.http.*
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.selectAll
 
-object ExposedGetAllHandler : AbstractAppService() {
+object ExposedGetAllHandler : AppServiceAdapter() {
 
   override suspend fun getAllReferencesInfo(page: Int): AppResult<List<ReferenceInfoItem>> {
     val pageSize = 10

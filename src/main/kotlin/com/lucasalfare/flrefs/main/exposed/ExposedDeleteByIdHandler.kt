@@ -1,12 +1,12 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AbstractAppService
+import com.lucasalfare.flrefs.main.AppServiceAdapter
 import com.lucasalfare.flrefs.main.AppDB
 import com.lucasalfare.flrefs.main.AppResult
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 
-object ExposedDeleteByIdHandler : AbstractAppService() {
+object ExposedDeleteByIdHandler : AppServiceAdapter() {
 
   override suspend fun deleteRegistryById(id: Int): AppResult<Unit> {
     AppDB.query {

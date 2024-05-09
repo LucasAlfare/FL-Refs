@@ -1,6 +1,6 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AbstractAppService
+import com.lucasalfare.flrefs.main.AppServiceAdapter
 import com.lucasalfare.flrefs.main.AppDB
 import com.lucasalfare.flrefs.main.AppException
 import com.lucasalfare.flrefs.main.AppResult
@@ -9,7 +9,7 @@ import io.ktor.http.*
 import org.jetbrains.exposed.sql.selectAll
 
 // TODO: damn, refactor this name
-object ExposedGetInfoByIdHandler : AbstractAppService() {
+object ExposedGetInfoByIdHandler : AppServiceAdapter() {
 
   override suspend fun getOriginalImageById(id: Int): AppResult<OriginalRawImage> {
     val search = AppDB.query {
