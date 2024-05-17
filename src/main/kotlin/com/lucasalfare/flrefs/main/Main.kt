@@ -6,9 +6,12 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -26,6 +29,8 @@ fun main() {
   embeddedServer(Netty, port = 80) {
     configureSerialization()
     configureCORS()
+    configureStatusPages()
+    configureStaticHtml()
     configureRouting()
   }.start(true)
 }
@@ -57,6 +62,20 @@ fun initDatabase(
   }
 }
 
+fun Application.configureStatusPages() {
+  install(StatusPages) {
+    exception<Throwable> { call, cause ->
+      when (cause) {
+        is UnavailableDatabaseService -> call.respond(HttpStatusCode.InternalServerError, "UnavailableDatabaseService")
+        is BadRequest -> call.respond(HttpStatusCode.BadRequest, "BadRequest")
+        is SerializationError -> call.respond(HttpStatusCode.BadRequest, "SerializationError")
+        is ValidationError -> call.respond(HttpStatusCode.BadRequest, "ValidationError")
+        else -> call.respond(HttpStatusCode.InternalServerError, "InternalServerError")
+      }
+    }
+  }
+}
+
 fun Application.configureCORS() {
   install(CORS) {
     anyHost()
@@ -68,6 +87,13 @@ fun Application.configureCORS() {
 fun Application.configureSerialization() {
   install(ContentNegotiation) {
     json(Json { isLenient = false })
+  }
+}
+
+fun Application.configureStaticHtml() {
+  routing {
+    staticResources(remotePath = "/inicio", basePackage = "assets", index = "pages/home.html")
+    staticResources(remotePath = "/fazer_upload", basePackage = "assets", index = "pages/upload.html")
   }
 }
 

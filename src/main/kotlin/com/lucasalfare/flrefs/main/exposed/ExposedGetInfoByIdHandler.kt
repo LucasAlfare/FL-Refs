@@ -1,9 +1,6 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AppServiceAdapter
-import com.lucasalfare.flrefs.main.AppDB
-import com.lucasalfare.flrefs.main.AppException
-import com.lucasalfare.flrefs.main.AppResult
+import com.lucasalfare.flrefs.main.*
 import com.lucasalfare.flrefs.main.model.OriginalRawImage
 import io.ktor.http.*
 import org.jetbrains.exposed.sql.selectAll
@@ -19,10 +16,7 @@ object ExposedGetInfoByIdHandler : AppServiceAdapter() {
         .singleOrNull()
         .let {
           if (it == null) {
-            throw AppException(
-              customMessage = "item not found.",
-              statusCode = HttpStatusCode.NotFound
-            )
+            throw UnavailableDatabaseService()
           }
 
           OriginalRawImage(

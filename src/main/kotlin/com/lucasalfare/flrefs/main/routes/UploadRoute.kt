@@ -1,9 +1,8 @@
 package com.lucasalfare.flrefs.main.routes
 
-import com.lucasalfare.flrefs.main.AppException
+import com.lucasalfare.flrefs.main.SerializationError
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import com.lucasalfare.flrefs.main.uploadHandler
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -14,15 +13,10 @@ fun Routing.uploadRoute() {
     val uploadRequestDTO = try {
       call.receive<UploadRequestDTO>()
     } catch (e: Exception) {
-      return@post call.respond(HttpStatusCode.BadRequest, "serialization error")
+      throw SerializationError()
     }
 
-    return@post try {
-      val result = uploadHandler.uploadReferenceImage(uploadRequestDTO)
-      call.respond(status = result.statusCode, message = result.data)
-    } catch (e: AppException) {
-      e.printStackTrace()
-      call.respond(status = e.statusCode, message = e.customMessage)
-    }
+    val result = uploadHandler.uploadReferenceImage(uploadRequestDTO)
+    return@post call.respond(status = result.statusCode, message = result.data)
   }
 }

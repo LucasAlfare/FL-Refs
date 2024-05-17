@@ -1,9 +1,7 @@
 package com.lucasalfare.flrefs.main.routes
 
-import com.lucasalfare.flrefs.main.AppException
-import com.lucasalfare.flrefs.main.exposed.ExposedGetByTermHandler
+import com.lucasalfare.flrefs.main.BadRequest
 import com.lucasalfare.flrefs.main.getByTermHandler
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -13,21 +11,16 @@ fun Routing.searchByTermRoute() {
     val term = try {
       (call.request.queryParameters["term"])!!
     } catch (e: Exception) {
-      return@get call.respond(HttpStatusCode.BadRequest, "bad URL query parameters.")
+      throw BadRequest()
     }
 
     val requestedPage = try {
       (call.request.queryParameters["page"])!!.toInt()
     } catch (e: Exception) {
-      return@get call.respond(HttpStatusCode.BadRequest, "bad URL query parameters.")
+      throw BadRequest()
     }
 
-    return@get try {
-      val result = getByTermHandler.getReferencesInfoByTerm(term = term, page = requestedPage)
-      call.respond(status = result.statusCode, message = result.data)
-    } catch (e: AppException) {
-      e.printStackTrace()
-      call.respond(status = e.statusCode, message = e.customMessage)
-    }
+    val result = getByTermHandler.getReferencesInfoByTerm(term = term, page = requestedPage)
+    return@get call.respond(status = result.statusCode, message = result.data)
   }
 }

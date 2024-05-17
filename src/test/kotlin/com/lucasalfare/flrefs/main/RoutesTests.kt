@@ -1,5 +1,10 @@
 package com.lucasalfare.flrefs.main
 
+import com.lucasalfare.flrefs.main.exposed.Franchises
+import com.lucasalfare.flrefs.main.exposed.ImagesData
+import com.lucasalfare.flrefs.main.exposed.ReferencesInfo
+import com.lucasalfare.flrefs.main.model.ReferenceInfoItem
+import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reference Items List</title>
 </head>
+
 <body>
 <h1>Reference Items List</h1>
 <ul id="referenceList"></ul>
@@ -12,45 +14,45 @@
 <script>
     // Function to fetch and display reference items
     function fetchReferenceItems() {
-        fetch('http://localhost:9999/')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Clear previous list items
-            const referenceList = document.getElementById('referenceList');
-            referenceList.innerHTML = '';
+        fetch('http://localhost:80/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Clear previous list items
+                const referenceList = document.getElementById('referenceList');
+                referenceList.innerHTML = '';
 
-            // Iterate through each item and create list item
-            data.forEach(item => {
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `
-                    <strong>Reference ID:</strong> ${item.referenceId}<br>
-                    <strong>Title:</strong> ${item.title}<br>
-                    <strong>Description:</strong> ${item.description}<br>
-                    <strong>Franchise Name:</strong> ${item.franchiseName}<br>
-                    <img src="data:image/jpeg;base64,${arrayBufferToBase64(item.rawThumbnailData)}" alt="Thumbnail"><br>
-                    <button onclick="downloadFile(${item.referenceId})">Download</button><br><br>
-                `;
-                referenceList.appendChild(listItem);
+                // Iterate through each item and create list item
+                data.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                <strong>Reference ID:</strong> ${item.referenceId}<br>
+                <strong>Title:</strong> ${item.title}<br>
+                <strong>Description:</strong> ${item.description}<br>
+                <strong>Franchise Name:</strong> ${item.franchiseName}<br>
+                <img src="data:image/jpeg;base64,${arrayBufferToBase64(item.rawThumbnailData)}" alt="Thumbnail"><br>
+                <button onclick="downloadFile(${item.referenceId})">Download</button><br><br>
+            `;
+                    referenceList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching reference items:', error);
+                // Handle error
             });
-        })
-        .catch(error => {
-            console.error('Error fetching reference items:', error);
-            // Handle error
-        });
     }
 
     // Function to download file
     function downloadFile(id) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:9999/download/' + id, true);
+        xhr.open('GET', 'http://localhost:80/download/' + id, true);
         xhr.responseType = 'blob';
 
-        xhr.onload = function() {
+        xhr.onload = function () {
             if (xhr.status === 200) {
                 var blob = xhr.response;
                 var link = document.createElement('a');
@@ -82,4 +84,5 @@
     window.onload = fetchReferenceItems;
 </script>
 </body>
+
 </html>

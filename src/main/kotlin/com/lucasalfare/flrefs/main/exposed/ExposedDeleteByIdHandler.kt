@@ -1,8 +1,8 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AppServiceAdapter
 import com.lucasalfare.flrefs.main.AppDB
 import com.lucasalfare.flrefs.main.AppResult
+import com.lucasalfare.flrefs.main.AppServiceAdapter
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 

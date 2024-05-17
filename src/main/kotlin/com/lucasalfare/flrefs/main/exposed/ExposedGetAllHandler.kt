@@ -30,8 +30,6 @@ object ExposedGetAllHandler : AppServiceAdapter() {
           )
         }
     }
-
-    //return@get call.respond(HttpStatusCode.OK, items)
     return AppResult(data = items, statusCode = HttpStatusCode.OK)
   }
 }

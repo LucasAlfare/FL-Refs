@@ -35,6 +35,9 @@ dependencies {
   // CORS...
   implementation("io.ktor:ktor-server-cors:$ktor_version")
 
+  // StatusPages plugin
+  implementation("io.ktor:ktor-server-status-pages:$ktor_version")
+
   // dependência para criptografar a senha
   implementation("org.mindrot:jbcrypt:0.4")
 
@@ -47,7 +50,7 @@ dependencies {
   Database.connect("jdbc:sqlite:/data/data.db", "org.sqlite.JDBC")
   TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE
    */
-//  implementation("org.xerial:sqlite-jdbc:3.45.2.0")
+  implementation("org.xerial:sqlite-jdbc:3.45.2.0")
 
   /*
   // Postgres dependency

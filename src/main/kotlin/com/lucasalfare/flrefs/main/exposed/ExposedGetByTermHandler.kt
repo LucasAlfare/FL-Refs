@@ -1,9 +1,9 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AppServiceAdapter
 import com.lucasalfare.flrefs.main.AppDB
-import com.lucasalfare.flrefs.main.AppException
 import com.lucasalfare.flrefs.main.AppResult
+import com.lucasalfare.flrefs.main.AppServiceAdapter
+import com.lucasalfare.flrefs.main.UnavailableDatabaseService
 import com.lucasalfare.flrefs.main.model.ReferenceInfoItem
 import io.ktor.http.*
 import kotlinx.coroutines.sync.Mutex
@@ -45,11 +45,7 @@ object ExposedGetByTermHandler : AppServiceAdapter() {
           }
       }
     } catch (e: Exception) {
-      throw AppException(
-        statusCode = HttpStatusCode.InternalServerError,
-        customMessage = "error selecting items by term",
-        parentException = e
-      )
+      throw UnavailableDatabaseService()
     }
 
     cacheMutex.withLock { cache[term] = items }
