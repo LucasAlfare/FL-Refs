@@ -1,7 +1,7 @@
 package com.lucasalfare.flrefs.main.exposed
 
 import com.lucasalfare.flrefs.main.*
-import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
+import com.lucasalfare.flrefs.main.model.dto.request.UploadRequestDTO
 import io.ktor.http.*
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId

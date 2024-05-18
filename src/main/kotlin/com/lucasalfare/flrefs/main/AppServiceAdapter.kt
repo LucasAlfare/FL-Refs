@@ -1,16 +1,16 @@
 package com.lucasalfare.flrefs.main
 
 import com.lucasalfare.flrefs.main.model.OriginalRawImage
-import com.lucasalfare.flrefs.main.model.ReferenceInfoItem
-import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
+import com.lucasalfare.flrefs.main.model.dto.response.ReferenceInfoItemDTO
+import com.lucasalfare.flrefs.main.model.dto.request.UploadRequestDTO
 
 interface AppService {
 
   suspend fun uploadReferenceImage(uploadRequestDTO: UploadRequestDTO): AppResult<Int>
 
-  suspend fun getAllReferencesInfo(page: Int = 1): AppResult<List<ReferenceInfoItem>>
+  suspend fun getAllReferencesInfo(page: Int = 1): AppResult<List<ReferenceInfoItemDTO>>
 
-  suspend fun getReferencesInfoByTerm(term: String, page: Int = 1): AppResult<List<ReferenceInfoItem>>
+  suspend fun getReferencesInfoByTerm(term: String, page: Int = 1): AppResult<List<ReferenceInfoItemDTO>>
 
   suspend fun getOriginalImageById(id: Int): AppResult<OriginalRawImage>
 
@@ -22,11 +22,11 @@ abstract class AppServiceAdapter : AppService {
     TODO("Abstract function has not implemented. Use concrete implementation instead.")
   }
 
-  override suspend fun getAllReferencesInfo(page: Int): AppResult<List<ReferenceInfoItem>> {
+  override suspend fun getAllReferencesInfo(page: Int): AppResult<List<ReferenceInfoItemDTO>> {
     TODO("Abstract function has not implemented. Use concrete implementation instead.")
   }
 
-  override suspend fun getReferencesInfoByTerm(term: String, page: Int): AppResult<List<ReferenceInfoItem>> {
+  override suspend fun getReferencesInfoByTerm(term: String, page: Int): AppResult<List<ReferenceInfoItemDTO>> {
     TODO("Abstract function has not implemented. Use concrete implementation instead.")
   }
 

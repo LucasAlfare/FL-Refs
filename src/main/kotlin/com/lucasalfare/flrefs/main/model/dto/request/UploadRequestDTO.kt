@@ -1,6 +1,6 @@
 @file:Suppress("ArrayInDataClass")
 
-package com.lucasalfare.flrefs.main.model.dto
+package com.lucasalfare.flrefs.main.model.dto.request
 
 import com.lucasalfare.flrefs.main.ValidationError
 import kotlinx.serialization.Serializable

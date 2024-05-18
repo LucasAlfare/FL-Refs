@@ -3,8 +3,8 @@ package com.lucasalfare.flrefs.main
 import com.lucasalfare.flrefs.main.exposed.Franchises
 import com.lucasalfare.flrefs.main.exposed.ImagesData
 import com.lucasalfare.flrefs.main.exposed.ReferencesInfo
-import com.lucasalfare.flrefs.main.model.ReferenceInfoItem
-import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
+import com.lucasalfare.flrefs.main.model.dto.response.ReferenceInfoItemDTO
+import com.lucasalfare.flrefs.main.model.dto.request.UploadRequestDTO
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -109,7 +109,7 @@ class RoutesTests {
     val requestResult = c.get("/?page=3")
     assertEquals(HttpStatusCode.OK, requestResult.status)
 
-    val items = requestResult.body<List<ReferenceInfoItem>>()
+    val items = requestResult.body<List<ReferenceInfoItemDTO>>()
     //items.map { "ReferenceItem(id=${it.referenceId})" }.forEach { println(it) }
 
     assertTrue(items.size == 10)
@@ -142,7 +142,7 @@ class RoutesTests {
     }
 
     val requestResult = c.get("/by_term?term=${nextStrangeTestTitle}&page=1")
-    val items = requestResult.body<List<ReferenceInfoItem>>()
+    val items = requestResult.body<List<ReferenceInfoItemDTO>>()
 //    items.map { "ReferenceItem(id=${it.referenceId})" }.forEach { println(it) }
     assertTrue(items.size == 1)
   }
