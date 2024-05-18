@@ -39,11 +39,6 @@ object ExposedUploadHandler : AppServiceAdapter() {
             it[concatenation] = uploadRequestDTO.createConcatenation()
           }.value
         } catch (e: Exception) {
-//          throw AppException(
-//            customMessage = "error inserting the reference info",
-//            statusCode = HttpStatusCode.InternalServerError,
-//            parentException = e
-//          )
           throw UnavailableDatabaseService()
         }
 
@@ -51,11 +46,6 @@ object ExposedUploadHandler : AppServiceAdapter() {
         val thumbnailBytes = try {
           ImageUtil.generateThumbnail(uploadRequestDTO.rawReferenceData)
         } catch (e: Exception) {
-//          throw AppException(
-//            customMessage = "error on creating thumbnail: invalid raw image data",
-//            statusCode = HttpStatusCode.InternalServerError,
-//            parentException = e
-//          )
           throw UnavailableDatabaseService()
         }
 
@@ -69,11 +59,6 @@ object ExposedUploadHandler : AppServiceAdapter() {
         return@query AppResult(data = referenceId, statusCode = HttpStatusCode.Created)
       }
     } catch (e: Exception) {
-//      throw AppException(
-//        customMessage = "error creating data",
-//        statusCode = HttpStatusCode.InternalServerError,
-//        parentException = e
-//      )
       throw UnavailableDatabaseService()
     }
   }

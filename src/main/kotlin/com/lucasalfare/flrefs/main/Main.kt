@@ -64,13 +64,13 @@ fun initDatabase(
 
 fun Application.configureStatusPages() {
   install(StatusPages) {
-    exception<Throwable> { call, cause ->
+    exception<AppError> { call, cause ->
       when (cause) {
-        is UnavailableDatabaseService -> call.respond(HttpStatusCode.InternalServerError, "UnavailableDatabaseService")
-        is BadRequest -> call.respond(HttpStatusCode.BadRequest, "BadRequest")
-        is SerializationError -> call.respond(HttpStatusCode.BadRequest, "SerializationError")
-        is ValidationError -> call.respond(HttpStatusCode.BadRequest, "ValidationError")
-        else -> call.respond(HttpStatusCode.InternalServerError, "InternalServerError")
+        is UnavailableDatabaseService -> call.respond(cause.status, cause.customMessage ?: "UnavailableDatabaseService")
+        is BadRequest -> call.respond(cause.status, "BadRequest")
+        is SerializationError -> call.respond(cause.status, "SerializationError")
+        is ValidationError -> call.respond(cause.status, "ValidationError")
+        else -> call.respond(cause.status, "InternalServerError")
       }
     }
   }
