@@ -92,8 +92,8 @@ fun Application.configureSerialization() {
 
 fun Application.configureStaticHtml() {
   routing {
-    staticResources(remotePath = "/inicio", basePackage = "assets", index = "pages/home.html")
-    staticResources(remotePath = "/fazer_upload", basePackage = "assets", index = "pages/upload.html")
+    staticResources(remotePath = "/home", basePackage = "assets", index = "pages/home.html")
+    staticResources(remotePath = "/upload_reference", basePackage = "assets", index = "pages/upload.html")
   }
 }
 
