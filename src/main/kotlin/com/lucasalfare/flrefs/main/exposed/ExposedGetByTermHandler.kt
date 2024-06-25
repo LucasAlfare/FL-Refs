@@ -1,9 +1,9 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AppDB
-import com.lucasalfare.flrefs.main.AppResult
+import com.lucasalfare.flbase.AppResult
+import com.lucasalfare.flbase.UnavailableDatabaseService
+import com.lucasalfare.flbase.database.AppDB
 import com.lucasalfare.flrefs.main.AppServiceAdapter
-import com.lucasalfare.flrefs.main.UnavailableDatabaseService
 import com.lucasalfare.flrefs.main.model.dto.response.ReferenceInfoItemDTO
 import io.ktor.http.*
 import kotlinx.coroutines.sync.Mutex
@@ -28,7 +28,7 @@ object ExposedGetByTermHandler : AppServiceAdapter() {
     }
 
     val items = try {
-      AppDB.query {
+      AppDB.exposedQuery {
         (Franchises leftJoin ReferencesInfo leftJoin ImagesData)
           .selectAll()
           .where { ReferencesInfo.concatenation like "%$term%" }

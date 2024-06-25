@@ -1,5 +1,7 @@
-plugins {
-  id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
-}
 rootProject.name = "FL-Refs"
 
+sourceControl {
+  gitRepository(java.net.URI("https://github.com/LucasAlfare/FL-Base")) {
+    producesModule("com.lucasalfare.flbase:FL-Base")
+  }
+}

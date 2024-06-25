@@ -1,8 +1,8 @@
 package com.lucasalfare.flrefs.main.exposed
 
+import com.lucasalfare.flbase.AppResult
+import com.lucasalfare.flbase.database.AppDB
 import com.lucasalfare.flrefs.main.AppServiceAdapter
-import com.lucasalfare.flrefs.main.AppDB
-import com.lucasalfare.flrefs.main.AppResult
 import com.lucasalfare.flrefs.main.model.dto.response.ReferenceInfoItemDTO
 import io.ktor.http.*
 import org.jetbrains.exposed.sql.SortOrder
@@ -15,7 +15,7 @@ object ExposedGetAllHandler : AppServiceAdapter() {
     val requestedPage = page.toLong()
     val searchOffset = maxOf(0, ((requestedPage - 1) * pageSize) - 1)
 
-    val items = AppDB.query {
+    val items = AppDB.exposedQuery {
       (Franchises leftJoin ReferencesInfo leftJoin ImagesData)
         .selectAll()
         .orderBy(ReferencesInfo.id to SortOrder.ASC)

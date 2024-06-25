@@ -1,5 +1,6 @@
 package com.lucasalfare.flrefs.main
 
+import com.lucasalfare.flbase.Constants
 import com.lucasalfare.flrefs.main.exposed.*
 import com.lucasalfare.flrefs.main.routes.*
 import io.ktor.http.*
@@ -26,7 +27,7 @@ val deleteByIdHandler: AppService = ExposedDeleteByIdHandler
 fun main() {
   initDatabase()
 
-  embeddedServer(Netty, port = 80) {
+  embeddedServer(factory = Netty, port = 80) {
     configureSerialization()
     configureCORS()
     configureStatusPages()

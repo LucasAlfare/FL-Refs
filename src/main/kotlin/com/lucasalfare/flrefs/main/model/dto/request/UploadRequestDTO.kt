@@ -2,7 +2,7 @@
 
 package com.lucasalfare.flrefs.main.model.dto.request
 
-import com.lucasalfare.flrefs.main.ValidationError
+import com.lucasalfare.flbase.ValidationError
 import kotlinx.serialization.Serializable
 
 // TODO: we must to keep track of original image format info

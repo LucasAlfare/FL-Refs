@@ -1,6 +1,6 @@
 package com.lucasalfare.flrefs.main.routes
 
-import com.lucasalfare.flrefs.main.SerializationError
+import com.lucasalfare.flbase.SerializationError
 import com.lucasalfare.flrefs.main.model.dto.request.UploadRequestDTO
 import com.lucasalfare.flrefs.main.uploadHandler
 import io.ktor.server.application.*

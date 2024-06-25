@@ -1,8 +1,9 @@
 package com.lucasalfare.flrefs.main
 
+import com.lucasalfare.flbase.AppResult
 import com.lucasalfare.flrefs.main.model.OriginalRawImage
-import com.lucasalfare.flrefs.main.model.dto.response.ReferenceInfoItemDTO
 import com.lucasalfare.flrefs.main.model.dto.request.UploadRequestDTO
+import com.lucasalfare.flrefs.main.model.dto.response.ReferenceInfoItemDTO
 
 interface AppService {
 

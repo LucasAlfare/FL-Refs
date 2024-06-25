@@ -1,15 +1,17 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.*
+import com.lucasalfare.flbase.AppResult
+import com.lucasalfare.flbase.UnavailableDatabaseService
+import com.lucasalfare.flbase.database.AppDB
+import com.lucasalfare.flrefs.main.AppServiceAdapter
 import com.lucasalfare.flrefs.main.model.OriginalRawImage
-import io.ktor.http.*
 import org.jetbrains.exposed.sql.selectAll
 
 // TODO: damn, refactor this name
 object ExposedGetInfoByIdHandler : AppServiceAdapter() {
 
   override suspend fun getOriginalImageById(id: Int): AppResult<OriginalRawImage> {
-    val search = AppDB.query {
+    val search = AppDB.exposedQuery {
       (ImagesData leftJoin ReferencesInfo)
         .selectAll()
         .where { ReferencesInfo.id eq id }

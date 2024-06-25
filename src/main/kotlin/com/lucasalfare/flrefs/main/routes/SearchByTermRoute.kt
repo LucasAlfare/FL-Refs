@@ -1,6 +1,6 @@
 package com.lucasalfare.flrefs.main.routes
 
-import com.lucasalfare.flrefs.main.BadRequest
+import com.lucasalfare.flbase.BadRequest
 import com.lucasalfare.flrefs.main.getByTermHandler
 import io.ktor.server.application.*
 import io.ktor.server.response.*

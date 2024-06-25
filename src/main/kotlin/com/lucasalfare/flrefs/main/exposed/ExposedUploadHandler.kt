@@ -1,6 +1,10 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.*
+import com.lucasalfare.flbase.AppResult
+import com.lucasalfare.flbase.UnavailableDatabaseService
+import com.lucasalfare.flbase.database.AppDB
+import com.lucasalfare.flrefs.main.AppServiceAdapter
+import com.lucasalfare.flrefs.main.ImageUtil
 import com.lucasalfare.flrefs.main.model.dto.request.UploadRequestDTO
 import io.ktor.http.*
 import org.jetbrains.exposed.sql.insert
@@ -12,7 +16,7 @@ object ExposedUploadHandler : AppServiceAdapter() {
 
   override suspend fun uploadReferenceImage(uploadRequestDTO: UploadRequestDTO): AppResult<Int> {
     return try {
-      AppDB.query {
+      AppDB.exposedQuery {
         // try get/create franchise
         val franchiseId = try {
           Franchises
@@ -56,7 +60,7 @@ object ExposedUploadHandler : AppServiceAdapter() {
           it[relatedFranchiseId] = franchiseId
           it[relatedReferenceId] = referenceId
         }
-        return@query AppResult(data = referenceId, statusCode = HttpStatusCode.Created)
+        return@exposedQuery AppResult(data = referenceId, statusCode = HttpStatusCode.Created)
       }
     } catch (e: Exception) {
       throw UnavailableDatabaseService()
