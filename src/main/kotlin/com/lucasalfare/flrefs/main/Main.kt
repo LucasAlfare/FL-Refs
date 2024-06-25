@@ -12,8 +12,7 @@ val getInfoByIdHandler: AppService = ExposedGetInfoByIdHandler
 val deleteByIdHandler: AppService = ExposedDeleteByIdHandler
 
 fun main() {
-  initDatabase()
-
+  initDatabase(Franchises, ReferencesInfo, ImagesData)
   startWebServer(port = 80) {
     configureSerialization()
     configureCORS()
