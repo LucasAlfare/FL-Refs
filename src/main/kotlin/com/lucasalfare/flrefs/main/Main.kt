@@ -1,6 +1,7 @@
 package com.lucasalfare.flrefs.main
 
-import com.lucasalfare.flbase.Constants
+import com.lucasalfare.flbase.*
+import com.lucasalfare.flbase.database.AppDB
 import com.lucasalfare.flrefs.main.exposed.*
 import com.lucasalfare.flrefs.main.routes.*
 import io.ktor.http.*
@@ -43,7 +44,8 @@ fun initDatabase(
     jdbcUrl = System.getenv("DB_JDBC_URL") ?: Constants.SQLITE_URL,
     jdbcDriverClassName = System.getenv("DB_JDBC_DRIVER") ?: Constants.SQLITE_DRIVER,
     username = System.getenv("DB_USERNAME") ?: "",
-    password = System.getenv("DB_PASSWORD") ?: ""
+    password = System.getenv("DB_PASSWORD") ?: "",
+    maximumPoolSize = 10
   ) {
     if (dropTablesOnStart) {
       SchemaUtils.drop(
