@@ -15,9 +15,15 @@ data class UploadRequestDTO(
 ) {
 
   init {
-    require(title.isNotEmpty()) { throw ValidationError() }
-    require(description.isNotEmpty()) { throw ValidationError() }
-    require(rawReferenceData.isNotEmpty()) { throw ValidationError() }
+    val conditions = arrayOf(
+      if (title.isEmpty()) "title is empty" else "",
+      if (description.isEmpty()) "title is empty" else "",
+      if (rawReferenceData.isEmpty()) "title is empty" else "",
+    )
+
+    require(conditions.all { it == "" }) {
+      throw ValidationError(customMessage = conditions.map { it }.toString())
+    }
   }
 
   fun createConcatenation() = buildString {
