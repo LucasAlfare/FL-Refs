@@ -13,7 +13,8 @@ import org.jetbrains.exposed.sql.selectAll
 
 object ExposedGetByTermHandler : AppServiceAdapter() {
 
-  // simple in-memory caching. TODO: consider using custom database/lib stuff for this
+  // simple in-memory caching.
+  // TODO: consider using custom database/lib stuff for this
   // TODO: consider not caching the entire thumbnail bytes, only info
   private val cache = mutableMapOf<String, List<ReferenceInfoItemDTO>>()
   private val cacheMutex = Mutex()
@@ -48,7 +49,11 @@ object ExposedGetByTermHandler : AppServiceAdapter() {
       throw UnavailableDatabaseService()
     }
 
-    cacheMutex.withLock { cache[term] = items }
+    try {
+      cacheMutex.withLock { cache[term] = items }
+    } catch (e: Exception) {
+      throw UnavailableDatabaseService(customMessage = "Server can not to cache search by term.")
+    }
 
     return AppResult(data = items, statusCode = HttpStatusCode.OK)
   }

@@ -18,15 +18,15 @@ fun main() {
     configureCORS()
     configureStatusPages()
     configureStaticHtml(
-      Pair("/home", "pages/home.html"),
+//      Pair("/home", "pages/home.html"),
       Pair("/upload_reference", "pages/upload.html")
     )
     configureRouting {
-      uploadRoute()
       homeListRoute()
       searchByTermRoute()
       downloadRoute()
-      deleteRoute()
+//      uploadRoute()
+//      deleteRoute()
     }
   }
 }

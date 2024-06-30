@@ -18,6 +18,7 @@ class ImageUtil {
       graphics.dispose()
 
       val outputStream = ByteArrayOutputStream()
+      // we use jpg format to really compress the image
       ImageIO.write(bufferedImage, "jpg", outputStream)
       outputStream.close()
 

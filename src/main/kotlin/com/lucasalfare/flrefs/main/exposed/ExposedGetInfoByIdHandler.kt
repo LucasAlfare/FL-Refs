@@ -17,9 +17,7 @@ object ExposedGetInfoByIdHandler : AppServiceAdapter() {
         .where { ReferencesInfo.id eq id }
         .singleOrNull()
         .let {
-          if (it == null) {
-            throw UnavailableDatabaseService()
-          }
+          if (it == null) throw UnavailableDatabaseService()
 
           OriginalRawImage(
             name = it[ReferencesInfo.title],
@@ -27,8 +25,6 @@ object ExposedGetInfoByIdHandler : AppServiceAdapter() {
           )
         }
     }
-
-    println("VALUE FOUND WAS: ${search.name}")
 
     return AppResult(data = search)
   }

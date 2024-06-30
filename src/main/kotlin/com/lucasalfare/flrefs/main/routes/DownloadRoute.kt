@@ -17,10 +17,9 @@ fun Routing.downloadRoute() {
 
     val result = getInfoByIdHandler.getOriginalImageById(referenceInfoId)
 
-    // static format?
-    val resultFile = File.createTempFile("${result.data.name}_reference_image", ".png")
-    resultFile.writeBytes(result.data.rawImageBytes)
-    resultFile.deleteOnExit()
-    return@get call.respondFile(resultFile)
+//    val resultFile = File.createTempFile("${result.data.name}_reference_image", ".png")
+//    resultFile.writeBytes(result.data.rawImageBytes)
+//    resultFile.deleteOnExit()
+    return@get call.respondBytes(result.data.rawImageBytes)
   }
 }
