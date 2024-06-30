@@ -25,7 +25,7 @@ fun main() {
       homeListRoute()
       searchByTermRoute()
       downloadRoute()
-//      uploadRoute()
+      uploadRoute()
 //      deleteRoute()
     }
   }
