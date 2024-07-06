@@ -3,6 +3,7 @@ package com.lucasalfare.flrefs.main.exposed
 import com.lucasalfare.flbase.UnavailableDatabaseService
 import com.lucasalfare.flbase.database.AppDB
 import com.lucasalfare.flrefs.main.AppServiceAdapter
+import io.ktor.http.*
 import org.jetbrains.exposed.sql.insert
 
 object CreateImageRegistryService : AppServiceAdapter() {
@@ -15,7 +16,10 @@ object CreateImageRegistryService : AppServiceAdapter() {
       }
       Unit
     } catch (e: Exception) {
-      throw UnavailableDatabaseService()
+      throw UnavailableDatabaseService(
+        status = HttpStatusCode.UnprocessableEntity,
+        customMessage = "Could not to insert meta descriptions in database."
+      )
     }
   }
 }
