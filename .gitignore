@@ -2,6 +2,7 @@
 *.env
 *.sensitive
 /.idea
+/.kotlin
 
 .gradle
 build/

@@ -9,7 +9,7 @@ import javax.imageio.ImageIO
 class ImageUtil {
 
   companion object {
-    fun generateThumbnail(imageBytes: ByteArray, width: Int = 200, height: Int = 200): ByteArray {
+    fun generateThumbnailCustom(imageBytes: ByteArray, width: Int = 200, height: Int = 200): ByteArray {
       val originalImage: BufferedImage = ImageIO.read(ByteArrayInputStream(imageBytes))
       val resizedImage: Image = originalImage.getScaledInstance(width, height, Image.SCALE_DEFAULT)
       val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
@@ -24,5 +24,7 @@ class ImageUtil {
 
       return outputStream.toByteArray()
     }
+
+    // TODO: implement generate thumbnail with Thumbnailator
   }
 }

@@ -2,33 +2,25 @@
 
 package com.lucasalfare.flrefs.main.model.dto.request
 
-import com.lucasalfare.flbase.ValidationError
+import com.lucasalfare.flbase.SerializationError
 import kotlinx.serialization.Serializable
 
-// TODO: we must to keep track of original image format info
 @Serializable
 data class UploadRequestDTO(
-  val title: String,
-  val description: String,
-  val relatedFranchiseName: String,
-  val rawReferenceData: ByteArray
+  val name: String,
+  val data: ByteArray
 ) {
-
   init {
-    val conditions = arrayOf(
-      if (title.isEmpty()) "title is empty" else "",
-      if (description.isEmpty()) "title is empty" else "",
-      if (rawReferenceData.isEmpty()) "title is empty" else "",
-    )
+    if (name.isEmpty()) {
+      throw SerializationError(customMessage = "Input name is empty.")
+    }
 
-    require(conditions.all { it == "" }) {
-      throw ValidationError(customMessage = conditions.map { it }.toString())
+    // checks in kilobytes range
+    if (data.size !in 1..(15_000 * 1000)) {
+      throw SerializationError(customMessage = "Input data size is higher than allowed.")
     }
   }
 
-  fun createConcatenation() = buildString {
-    append(title)
-    append(description)
-    append(relatedFranchiseName)
-  }
+  override fun toString() =
+    "UploadRequestDTO(name=$name, data=\"${if (data.isNotEmpty()) "[...]" else "[empty}"}\")"
 }

@@ -1,32 +1,39 @@
 package com.lucasalfare.flrefs.main
 
-import com.lucasalfare.flbase.*
-import com.lucasalfare.flbase.database.initDatabase
-import com.lucasalfare.flrefs.main.exposed.*
-import com.lucasalfare.flrefs.main.routes.*
 
-val getAllHandler: AppService = ExposedGetAllHandler
-val getByTermHandler: AppService = ExposedGetByTermHandler
-val uploadHandler: AppService = ExposedUploadHandler
-val getInfoByIdHandler: AppService = ExposedGetInfoByIdHandler
-val deleteByIdHandler: AppService = ExposedDeleteByIdHandler
+import com.lucasalfare.flbase.configureCORS
+import com.lucasalfare.flbase.configureRouting
+import com.lucasalfare.flbase.configureStatusPages
+import com.lucasalfare.flbase.database.initDatabase
+import com.lucasalfare.flbase.startWebServer
+import com.lucasalfare.flrefs.main.cdn.GithubCdnUploaderAdapter
+import com.lucasalfare.flrefs.main.exposed.CreateImageRegistryService
+import com.lucasalfare.flrefs.main.exposed.Images
+import com.lucasalfare.flrefs.main.routes.uploadRoute
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.*
+import kotlinx.serialization.json.Json
+
+val createImageRegistryService: AppServiceAdapter = CreateImageRegistryService
+val cdnUploader: AppCdnUploaderAdapter = GithubCdnUploaderAdapter
 
 fun main() {
-  initDatabase(Franchises, ReferencesInfo, ImagesData)
-  startWebServer(port = 80) {
-    configureSerialization()
+  initDatabase(Images, dropTablesOnStart = false)
+
+  startWebServer(port = 8080) {
     configureCORS()
     configureStatusPages()
-    configureStaticHtml(
-//      Pair("/home", "pages/home.html"),
-      Pair("/upload_reference", "pages/upload.html")
-    )
+
+    install(ContentNegotiation) {
+      json(Json {
+        isLenient = false
+        ignoreUnknownKeys = true
+      })
+    }
+
     configureRouting {
-      homeListRoute()
-      searchByTermRoute()
-      downloadRoute()
       uploadRoute()
-//      deleteRoute()
     }
   }
 }

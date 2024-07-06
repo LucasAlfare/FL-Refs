@@ -1,5 +1,7 @@
 @file:Suppress("PropertyName", "SpellCheckingInspection")
 
+val thumbnailator_version: String by project
+
 plugins {
   kotlin("jvm") version "2.0.0"
   id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
@@ -14,12 +16,22 @@ repositories {
 }
 
 dependencies {
-  // All server/database/patterns stuff comes from this template
+
   implementation("com.lucasalfare.flbase:FL-Base") {
     version {
-      branch = "main" // convenience to target the branch "main"
+      branch = "main"
     }
   }
+
+  implementation("com.lucasalfare.kgasc:kGasC") {
+    version {
+      branch = "master"
+    }
+  }
+
+  implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.52.0")
+
+  implementation("net.coobird:thumbnailator:$thumbnailator_version")
 
   testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
