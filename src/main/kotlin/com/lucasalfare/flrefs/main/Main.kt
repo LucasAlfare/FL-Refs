@@ -2,31 +2,23 @@ package com.lucasalfare.flrefs.main
 
 import com.lucasalfare.flbase.*
 import com.lucasalfare.flbase.database.initDatabase
-import com.lucasalfare.flrefs.main.exposed.*
-import com.lucasalfare.flrefs.main.routes.*
+import com.lucasalfare.flrefs.main.cdn.github.GithubCdnUploader
+import com.lucasalfare.flrefs.main.data.exposed.Images
+import com.lucasalfare.flrefs.main.data.exposed.ImagesInserterExposed
+import com.lucasalfare.flrefs.main.routes.uploadRoute
 
-val getAllHandler: AppService = ExposedGetAllHandler
-val getByTermHandler: AppService = ExposedGetByTermHandler
-val uploadHandler: AppService = ExposedUploadHandler
-val getInfoByIdHandler: AppService = ExposedGetInfoByIdHandler
-val deleteByIdHandler: AppService = ExposedDeleteByIdHandler
+
+var imagesInserter: AppService = ImagesInserterExposed
+var cdnUploader: CdnUploader = GithubCdnUploader
 
 fun main() {
-  initDatabase(Franchises, ReferencesInfo, ImagesData)
-  startWebServer(port = 80) {
-    configureSerialization()
+  initDatabase(Images, dropTablesOnStart = false)
+
+  startWebServer(port = 8080) {
+    val appRef = this
     configureCORS()
+    configureSerialization()
     configureStatusPages()
-    configureStaticHtml(
-//      Pair("/home", "pages/home.html"),
-      Pair("/upload_reference", "pages/upload.html")
-    )
-    configureRouting {
-      homeListRoute()
-      searchByTermRoute()
-      downloadRoute()
-      uploadRoute()
-//      deleteRoute()
-    }
+    configureRouting { uploadRoute(appRef) }
   }
 }
