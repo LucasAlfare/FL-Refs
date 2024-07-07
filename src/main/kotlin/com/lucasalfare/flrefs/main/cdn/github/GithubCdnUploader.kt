@@ -7,7 +7,7 @@ import com.lucasalfare.kgasc.GithubHelper
 
 object GithubCdnUploader : CdnUploaderAdapter() {
 
-  private const val ROOT_REPOSITORY = "uploads"
+  private const val ROOT_DIRECTORY = "uploads"
 
   private val token = System.getenv("GITHUB_API_TOKEN") ?: throw AppError("init error")
   private val username = System.getenv("GITHUB_CDN_USERNAME") ?: throw AppError("init error")
@@ -21,7 +21,7 @@ object GithubCdnUploader : CdnUploaderAdapter() {
     githubToken = token,
     username = username,
     repository = repository,
-    targetPathInRepository = "$ROOT_REPOSITORY/$targetPath",
+    targetPathInRepository = "$ROOT_DIRECTORY/$targetPath",
     inputFileName = name,
     inputFileBytes = data
   ).let {
