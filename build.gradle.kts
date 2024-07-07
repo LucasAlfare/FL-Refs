@@ -8,7 +8,7 @@ plugins {
   application
 }
 
-group = "com.lucasalfare"
+group = "com.lucasalfare.flrefs"
 version = "1.0"
 
 repositories {
