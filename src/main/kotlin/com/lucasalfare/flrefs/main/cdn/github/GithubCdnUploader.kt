@@ -28,7 +28,7 @@ object GithubCdnUploader : CdnUploaderAdapter() {
     inputFileName = name,
     inputFileBytes = data
   ).let {
-    if (it == null) throw UnavailableCdnService()
+    if (it == null) throw UnavailableCdnService("Could not to upload to CDN using ${this.javaClass.name}.")
     return@let it
   }
 }
