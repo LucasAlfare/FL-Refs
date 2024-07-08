@@ -21,7 +21,7 @@ data class UploadRequestDTO(
     if (name.isBlank()) throw ValidationError("Name cannot be blank")
     if (data.isEmpty()) throw ValidationError("Data cannot be empty")
 
-    title = title.removeAccentuation()
+    title = title.replace(" ", "_").lowercase().removeAccentuation()
     description = description.removeAccentuation()
     category = category.removeAccentuation()
     name = name.removeAccentuation()

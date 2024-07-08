@@ -14,20 +14,19 @@ import io.ktor.server.routing.*
 fun Routing.uploadRoute(application: Application) {
   post("/uploads") {
     call.receive<UploadRequestDTO>().also { req ->
-      val targetPath = req.title.replace(" ", "_").lowercase()
 
       // uploads original to CDN
       cdnUploader.upload(
         name = req.name,
         data = req.data,
-        targetPath = targetPath
+        targetPath = req.title
       ).also { originalResult ->
         val thumbnailBytes = generateThumbnail(req.data)
         // uploads its generated thumbnail to CDN
         cdnUploader.upload(
           name = "thumbnail-${req.name}",
           data = thumbnailBytes,
-          targetPath = targetPath
+          targetPath = req.title
         ).also { thumbnailResult ->
           // insert info in DB
           imagesInserter.doInsert(
