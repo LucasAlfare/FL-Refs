@@ -11,7 +11,7 @@ object Images : IntIdTable("Images") {
   val description = text("description")
   val category = text("category")
   val name = text("name")
-  val downloadUrl = text("download_url")
-  val thumbnailDownloadUrl = text("thumbnail_download_url")
+  val originalUrl = text("original_url")
+  val thumbnailUrl = text("thumbnail__url")
   // TODO: consider implementing storage of image path inside CDN
 }

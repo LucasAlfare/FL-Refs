@@ -17,28 +17,27 @@ fun Routing.uploadRoute(application: Application) {
 
       // uploads original to CDN
       cdnUploader.upload(
-        name = req.name,
-        data = req.data,
-        targetPath = req.title
-      ).also { originalResult ->
+        name = req.name, data = req.data, targetPath = req.title
+      ).also { originalCdnResult ->
         val thumbnailBytes = generateThumbnail(req.data)
         // uploads its generated thumbnail to CDN
         cdnUploader.upload(
-          name = "thumbnail-${req.name}",
-          data = thumbnailBytes,
-          targetPath = req.title
-        ).also { thumbnailResult ->
+          name = "thumbnail-${req.name}", data = thumbnailBytes, targetPath = req.title
+        ).also { thumbnailCdnResult ->
           // insert info in DB
           imagesInserter.doInsert(
             title = req.title,
             description = req.description,
             category = req.category,
             name = req.name,
-            downloadUrl = originalResult.content.downloadUrl,
-            thumbnailDownloadUrl = thumbnailResult.content.downloadUrl
-          ).also { downloadUrlThumbnailDownloadUrl ->
+            originalUrl = originalCdnResult.content.downloadUrl,
+            thumbnailUrl = thumbnailCdnResult.content.downloadUrl
+          ).also { originalAndThumbnailDownloadUrl ->
             // respond to client
-            return@post call.respond(HttpStatusCode.Created, downloadUrlThumbnailDownloadUrl)
+            return@post call.respond(
+              status = HttpStatusCode.Created,
+              message = originalAndThumbnailDownloadUrl
+            )
           }
         }
       }

@@ -7,8 +7,8 @@ interface AppService {
     description: String,
     category: String,
     name: String,
-    downloadUrl: String,
-    thumbnailDownloadUrl: String
+    originalUrl: String,
+    thumbnailUrl: String
   ): Array<String>
 }
 
@@ -19,8 +19,8 @@ abstract class AppServiceAdapter : AppService {
     description: String,
     category: String,
     name: String,
-    downloadUrl: String,
-    thumbnailDownloadUrl: String
+    originalUrl: String,
+    thumbnailUrl: String
   ): Array<String> {
     TODO("Not yet implemented")
   }

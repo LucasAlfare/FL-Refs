@@ -12,8 +12,8 @@ object ImagesInserterExposed : AppServiceAdapter() {
     description: String,
     category: String,
     name: String,
-    downloadUrl: String,
-    thumbnailDownloadUrl: String
+    originalUrl: String,
+    thumbnailUrl: String
   ) = AppDB.exposedQuery {
     try {
       Images.insert {
@@ -21,10 +21,10 @@ object ImagesInserterExposed : AppServiceAdapter() {
         it[Images.description] = description
         it[Images.category] = category
         it[Images.name] = name
-        it[Images.downloadUrl] = downloadUrl
-        it[Images.thumbnailDownloadUrl] = thumbnailDownloadUrl
+        it[Images.originalUrl] = originalUrl
+        it[Images.thumbnailUrl] = thumbnailUrl
       }
-      arrayOf(downloadUrl, thumbnailDownloadUrl)
+      arrayOf(originalUrl, thumbnailUrl)
     } catch (e: Exception) {
       throw UnavailableDatabaseService("Could not to insert image info in database.")
     }
