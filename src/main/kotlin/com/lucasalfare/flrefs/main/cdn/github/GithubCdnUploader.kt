@@ -4,6 +4,7 @@ import com.lucasalfare.flbase.AppError
 import com.lucasalfare.flrefs.main.CdnUploaderAdapter
 import com.lucasalfare.flrefs.main.UnavailableCdnService
 import com.lucasalfare.kgasc.GithubHelper
+import com.lucasalfare.kgasc.UploadResponseDTO
 
 object GithubCdnUploader : CdnUploaderAdapter() {
 
@@ -17,7 +18,7 @@ object GithubCdnUploader : CdnUploaderAdapter() {
     name: String,
     data: ByteArray,
     targetPath: String
-  ) = GithubHelper.uploadFileToGithub(
+  ): UploadResponseDTO = GithubHelper.uploadFileToGithub(
     githubToken = token,
     username = username,
     repository = repository,
