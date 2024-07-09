@@ -8,6 +8,6 @@ data class ItemResponseDTO(
   var description: String,
   var category: String,
   var name: String,
-  var downloadUrl: String,
-  var thumbnailDownloadUrl: String
+  var originalUrl: String,
+  var thumbnailUrl: String
 )

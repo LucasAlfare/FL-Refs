@@ -15,6 +15,6 @@ interface CdnUploader {
 abstract class CdnUploaderAdapter : CdnUploader {
 
   override suspend fun upload(name: String, data: ByteArray, targetPath: String): UploadResponseDTO {
-    TODO("Not yet implemented")
+    throw UnavailableCdnService("Not implemented")
   }
 }
