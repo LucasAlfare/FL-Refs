@@ -11,10 +11,15 @@ interface AppService {
     category: String,
     name: String,
     originalUrl: String,
-    thumbnailUrl: String
+    thumbnailUrl: String,
+    concatenation: String
   ): Array<String>
 
-  suspend fun getAll(maxItems: Int = 0, offset: Int = 0): List<ItemResponseDTO>
+  suspend fun getAll(
+    term: String = "",
+    maxItems: Int = 0,
+    offset: Int = 0
+  ): List<ItemResponseDTO>
 }
 
 abstract class AppServiceAdapter : AppService {
@@ -25,12 +30,17 @@ abstract class AppServiceAdapter : AppService {
     category: String,
     name: String,
     originalUrl: String,
-    thumbnailUrl: String
+    thumbnailUrl: String,
+    concatenation: String
   ): Array<String> {
     throw UnavailableDatabaseService("Not implemented")
   }
 
-  override suspend fun getAll(maxItems: Int, offset: Int): List<ItemResponseDTO> {
+  override suspend fun getAll(
+    term: String,
+    maxItems: Int,
+    offset: Int
+  ): List<ItemResponseDTO> {
     throw UnavailableDatabaseService("Not implemented")
   }
 }

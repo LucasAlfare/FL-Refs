@@ -13,7 +13,8 @@ object ImagesInserterExposed : AppServiceAdapter() {
     category: String,
     name: String,
     originalUrl: String,
-    thumbnailUrl: String
+    thumbnailUrl: String,
+    concatenation: String
   ) = AppDB.exposedQuery {
     try {
       Images.insert {
@@ -23,6 +24,7 @@ object ImagesInserterExposed : AppServiceAdapter() {
         it[Images.name] = name
         it[Images.originalUrl] = originalUrl
         it[Images.thumbnailUrl] = thumbnailUrl
+        it[Images.concatenation] = concatenation
       }
       arrayOf(originalUrl, thumbnailUrl)
     } catch (e: Exception) {

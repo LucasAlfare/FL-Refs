@@ -27,6 +27,8 @@ data class UploadRequestDTO(
     name = name.removeAccentuation()
   }
 
+  fun getConcatenation() = buildString { append(title); append(description); append(category) }
+
   override fun toString(): String {
     return "UploadRequestDTO(title=$title, description=$description, name=$name)"
   }

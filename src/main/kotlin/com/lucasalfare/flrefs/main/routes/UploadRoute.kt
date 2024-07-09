@@ -31,7 +31,8 @@ fun Routing.uploadRoute(application: Application) {
             category = req.category,
             name = req.name,
             originalUrl = originalCdnResult.content.downloadUrl,
-            thumbnailUrl = thumbnailCdnResult.content.downloadUrl
+            thumbnailUrl = thumbnailCdnResult.content.downloadUrl,
+            concatenation = req.getConcatenation()
           ).also { originalAndThumbnailDownloadUrl ->
             // respond to client
             return@post call.respond(
