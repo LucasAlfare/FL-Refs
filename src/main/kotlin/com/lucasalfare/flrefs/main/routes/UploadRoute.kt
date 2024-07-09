@@ -10,9 +10,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-@Suppress("UNUSED_PARAMETER")
 // TODO: consider inserting into DB first, then CDN upload
-fun Routing.uploadRoute(application: Application) {
+fun Routing.uploadRoute() {
   post("/uploads") {
     call.receive<UploadRequestDTO>().also { req ->
 

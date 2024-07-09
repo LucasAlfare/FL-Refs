@@ -6,7 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Routing.getAllItemsRoute(application: Application) {
+fun Routing.getAllItemsRoute() {
   get("/images") {
     val numItems = call.request.queryParameters["num_items"] ?: "0"
     val page = call.request.queryParameters["page"] ?: "0"

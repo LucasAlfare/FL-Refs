@@ -22,8 +22,8 @@ fun main() {
     configureSerialization()
     configureStatusPages()
     configureRouting {
-      uploadRoute(application)
-      getAllItemsRoute(application)
+      uploadRoute()
+      getAllItemsRoute()
     }
   }
 }
