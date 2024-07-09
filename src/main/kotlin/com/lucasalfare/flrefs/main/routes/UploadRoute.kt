@@ -11,6 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 @Suppress("UNUSED_PARAMETER")
+// TODO: consider inserting into DB first, then CDN upload
 fun Routing.uploadRoute(application: Application) {
   post("/uploads") {
     call.receive<UploadRequestDTO>().also { req ->
@@ -25,7 +26,7 @@ fun Routing.uploadRoute(application: Application) {
           name = "thumbnail-${req.name}", data = thumbnailBytes, targetPath = req.title
         ).also { thumbnailCdnResult ->
           // insert info in DB
-          imagesInserter.doInsert(
+          imagesInserter.create(
             title = req.title,
             description = req.description,
             category = req.category,

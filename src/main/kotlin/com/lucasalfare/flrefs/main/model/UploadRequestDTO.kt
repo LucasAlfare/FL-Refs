@@ -20,6 +20,8 @@ data class UploadRequestDTO(
     if (category.isBlank()) throw ValidationError("Category cannot be blank")
     if (name.isBlank()) throw ValidationError("Name cannot be blank")
     if (data.isEmpty()) throw ValidationError("Data cannot be empty")
+    if (name.split(".").last().lowercase().contains("webp"))
+      throw ValidationError("WEBP format is not supported yet.")
 
     title = title.replace(" ", "_").lowercase().removeAccentuation()
     description = description.removeAccentuation()

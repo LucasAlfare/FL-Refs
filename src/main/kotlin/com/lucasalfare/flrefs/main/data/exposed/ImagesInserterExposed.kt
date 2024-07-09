@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.insert
 
 object ImagesInserterExposed : AppServiceAdapter() {
 
-  override suspend fun doInsert(
+  override suspend fun create(
     title: String,
     description: String,
     category: String,

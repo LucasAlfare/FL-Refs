@@ -12,10 +12,6 @@ fun Routing.getAllItemsRoute(application: Application) {
     val page = call.request.queryParameters["page"] ?: "0"
     val term = call.request.queryParameters["term"] ?: ""
 
-    application.log.debug("num_items: {}", numItems)
-    application.log.debug("page: {}", page)
-    application.log.debug("term: {}", term)
-
     return@get imagesGetter.getAll(
       term = term,
       maxItems = numItems.toInt(),

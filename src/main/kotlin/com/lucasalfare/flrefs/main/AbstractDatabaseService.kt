@@ -5,7 +5,7 @@ import com.lucasalfare.flrefs.main.model.ItemResponseDTO
 
 interface AppService {
 
-  suspend fun doInsert(
+  suspend fun create(
     title: String,
     description: String,
     category: String,
@@ -24,7 +24,7 @@ interface AppService {
 
 abstract class AppServiceAdapter : AppService {
 
-  override suspend fun doInsert(
+  override suspend fun create(
     title: String,
     description: String,
     category: String,
