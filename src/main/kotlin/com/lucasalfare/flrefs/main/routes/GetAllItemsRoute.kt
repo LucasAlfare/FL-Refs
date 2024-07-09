@@ -1,5 +1,6 @@
 package com.lucasalfare.flrefs.main.routes
 
+import com.lucasalfare.flbase.BadRequest
 import com.lucasalfare.flrefs.main.imagesGetter
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -11,6 +12,10 @@ fun Routing.getAllItemsRoute() {
     val numItems = call.request.queryParameters["num_items"] ?: "0"
     val page = call.request.queryParameters["page"] ?: "0"
     val term = call.request.queryParameters["term"] ?: ""
+
+    if (numItems.toIntOrNull() == null || page.toIntOrNull() == null) {
+      throw BadRequest("Bad GET query parameters")
+    }
 
     return@get imagesGetter.getAll(
       term = term,
