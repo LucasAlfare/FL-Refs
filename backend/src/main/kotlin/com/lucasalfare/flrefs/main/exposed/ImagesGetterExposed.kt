@@ -19,6 +19,7 @@ object ImagesGetterExposed : AppServiceAdapter() {
         .limit(n = if (maxItems == 0) MAX_PAGE_ITEMS else maxItems, offset.toLong())
         .map {
           ItemResponseDTO(
+            id = it[Images.id].value,
             title = it[Images.title],
             description = it[Images.description],
             category = it[Images.category],

@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ItemResponseDTO(
+  var id: Int,
   var title: String,
   var description: String,
   var category: String,
