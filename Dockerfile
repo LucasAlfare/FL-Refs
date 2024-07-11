@@ -7,7 +7,7 @@
 
 FROM gradle:8.5-alpine as gradle_stage
 LABEL authors="Francisco Lucas"
-COPY ./backend /app
+COPY . /app
 WORKDIR /app
 RUN cd /app
 RUN ./gradlew clean
@@ -18,5 +18,5 @@ RUN ./gradlew assemble --no-daemon
 FROM openjdk:17-alpine as jdk_stage
 EXPOSE 80
 RUN mkdir /app
-COPY --from=gradle_stage /app /app
+COPY --from=gradle_stage /app/backend /app
 ENTRYPOINT ["java", "-jar", "/app/build/libs/backend-1.0.jar"]
