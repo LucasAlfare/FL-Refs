@@ -28,13 +28,13 @@ fun Application.configureStatusPages() {
           applicationRef.log.error("Caught root AppError in server -> $root: ${root.customMessage}")
           call.respond(
             status = root.status,
-            message = "$root: ${root.customMessage}"
+            message = "AppError in server -> $root: ${root.customMessage}"
           )
         }
 
         else -> {
-          applicationRef.log.error("Unexpected type of error:\n$cause: ${cause.message}")
-          call.respond(HttpStatusCode.InternalServerError, "$cause: ${cause.message}")
+          applicationRef.log.error("Unexpected error in server -> $cause: ${cause.message}")
+          call.respond(HttpStatusCode.InternalServerError, "Unexpected error in server -> $cause: ${cause.message}")
         }
       }
     }

@@ -1,7 +1,7 @@
 package com.lucasalfare.flrefs.main.github
 
-import com.lucasalfare.flrefs.main.AppError
 import com.lucasalfare.flrefs.main.CdnUploaderAdapter
+import com.lucasalfare.flrefs.main.EnvsLoader.loadEnv
 import com.lucasalfare.flrefs.main.UnavailableCdnService
 import com.lucasalfare.kgasc.main.GithubHelper
 import com.lucasalfare.kgasc.main.UploadResponseDTO
@@ -10,9 +10,9 @@ object GithubCdnUploader : CdnUploaderAdapter() {
 
   private const val ROOT_DIRECTORY = "uploads"
 
-  private val token = System.getenv("GITHUB_API_TOKEN") ?: throw AppError("init error")
-  private val username = System.getenv("GITHUB_CDN_USERNAME") ?: throw AppError("init error")
-  private val repository = System.getenv("GITHUB_CDN_REPOSITORY") ?: throw AppError("init error")
+  private val token = loadEnv("GITHUB_API_TOKEN")
+  private val username = loadEnv("GITHUB_CDN_USERNAME")
+  private val repository = loadEnv("GITHUB_CDN_REPOSITORY")
 
   override suspend fun upload(
     name: String,

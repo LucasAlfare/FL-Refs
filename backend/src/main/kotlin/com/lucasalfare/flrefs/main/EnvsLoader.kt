@@ -49,12 +49,12 @@ object EnvsLoader {
     Constants.DEFAULT_WEB_SERVER_PORT.toString()
   ).toString()
 
-  fun customLoad(
+  fun loadEnv(
     name: String,
-    defaultWhenNull: String,
-    defaultWhenEmpty: String,
-    throwWhenNull: Boolean = false,
-    throwWhenEmpty: Boolean = false
+    defaultWhenNull: String = "",
+    defaultWhenEmpty: String = "",
+    throwWhenNull: Boolean = true,
+    throwWhenEmpty: Boolean = true
   ) = EnvValue(
     name, defaultWhenNull, defaultWhenEmpty, throwWhenNull, throwWhenEmpty
   ).toString()

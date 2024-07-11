@@ -13,10 +13,14 @@ version = "1.0"
 
 dependencies {
   // ktor client
-  implementation("io.ktor:ktor-client-core:$ktor_version")
-  implementation("io.ktor:ktor-client-cio:$ktor_version")
+  api("io.ktor:ktor-client-core:$ktor_version")
+  api("io.ktor:ktor-client-cio:$ktor_version")
 
   // Client Serialization
-  implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-  implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+  api("io.ktor:ktor-client-content-negotiation:$ktor_version")
+  api("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+}
+
+kotlin {
+  jvmToolchain(17)
 }

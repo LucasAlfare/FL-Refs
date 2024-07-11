@@ -7,6 +7,7 @@ val thumbnailator_version: String by project
 plugins {
   kotlin("jvm")
   id("org.jetbrains.kotlin.plugin.serialization")
+  application
 }
 
 group = "com.com.lucasalfare.flrefs"
@@ -35,7 +36,7 @@ dependencies {
   // SQL Framework Exposed Core, JDBC transport layer and date module
   implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
   implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-  implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.52.0")
+  implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposed_version")
 
   /*
   // SQLite dependency
@@ -57,4 +58,23 @@ dependencies {
   implementation("ch.qos.logback:logback-classic:1.5.3")
 
   testImplementation("org.jetbrains.kotlin:kotlin-test")
+}
+
+kotlin {
+  jvmToolchain(17)
+}
+
+application {
+  // Define the main class for the application.
+  mainClass.set("com.lucasalfare.flrefs.main.MainKt")
+}
+
+tasks.withType<Jar> {
+  manifest {
+    // "Main-Class" is set to the actual main file path
+    attributes["Main-Class"] = application.mainClass
+  }
+
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  from(configurations.compileClasspath.map { config -> config.map { if (it.isDirectory) it else zipTree(it) } })
 }

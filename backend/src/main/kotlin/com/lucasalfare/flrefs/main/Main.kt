@@ -16,7 +16,7 @@ var cdnUploader: CdnUploader = GithubCdnUploader
 fun main() {
   initDatabase(Images, dropTablesOnStart = false)
 
-  startWebServer(port = 8080) {
+  startWebServer(port = 80) {
     configureCORS()
     configureSerialization()
     configureStatusPages()
