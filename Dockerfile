@@ -18,5 +18,5 @@ RUN gradle assemble --no-daemon
 FROM openjdk:17-alpine as jdk_stage
 EXPOSE 80
 RUN mkdir /app
-COPY --from=my_build /app /app
+COPY --from=gradle_stage /app /app
 ENTRYPOINT ["java", "-jar", "/app/build/libs/backend-1.0.jar"]
