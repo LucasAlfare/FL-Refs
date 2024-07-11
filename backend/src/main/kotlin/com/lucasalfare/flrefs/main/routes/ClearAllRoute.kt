@@ -8,7 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.deleteAll
 
-fun Routing.clearAllRoute() {
+fun Routing.clearAllItemsRoute() {
   // TODO: this MUST to be inside auth block!
   delete("/clear") {
     AppDB.exposedQuery {

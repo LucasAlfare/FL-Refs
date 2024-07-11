@@ -5,9 +5,9 @@ import com.lucasalfare.flrefs.main.exposed.ImagesGetterExposed
 import com.lucasalfare.flrefs.main.exposed.ImagesInserterExposed
 import com.lucasalfare.flrefs.main.exposed.initDatabase
 import com.lucasalfare.flrefs.main.github.GithubCdnUploader
-import com.lucasalfare.flrefs.main.routes.clearAllRoute
+import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
-import com.lucasalfare.flrefs.main.routes.uploadRoute
+import com.lucasalfare.flrefs.main.routes.uploadItemRoute
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -29,9 +29,9 @@ fun main() {
         call.respondText("We are alive!")
       }
 
-      uploadRoute()
+      uploadItemRoute()
       getAllItemsRoute()
-      clearAllRoute()
+      clearAllItemsRoute()
     }
   }
 }

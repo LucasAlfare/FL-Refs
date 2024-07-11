@@ -11,7 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 // TODO: consider inserting into DB first, then CDN upload
-fun Routing.uploadRoute() {
+fun Routing.uploadItemRoute() {
   post("/uploads") {
     call.receive<UploadRequestDTO>().also { req ->
 
