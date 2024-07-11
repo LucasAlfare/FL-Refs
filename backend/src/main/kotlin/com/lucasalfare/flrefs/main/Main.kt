@@ -5,8 +5,12 @@ import com.lucasalfare.flrefs.main.exposed.ImagesGetterExposed
 import com.lucasalfare.flrefs.main.exposed.ImagesInserterExposed
 import com.lucasalfare.flrefs.main.exposed.initDatabase
 import com.lucasalfare.flrefs.main.github.GithubCdnUploader
+import com.lucasalfare.flrefs.main.routes.clearAllRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.uploadRoute
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
 
 var imagesInserter: AppService = ImagesInserterExposed
@@ -21,8 +25,13 @@ fun main() {
     configureSerialization()
     configureStatusPages()
     configureRouting {
+      get("/health") {
+        call.respondText("We are alive!")
+      }
+
       uploadRoute()
       getAllItemsRoute()
+      clearAllRoute()
     }
   }
 }
