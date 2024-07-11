@@ -1,11 +1,17 @@
 rootProject.name = "FL-Refs"
 
-sourceControl {
-  gitRepository(java.net.URI("https://github.com/LucasAlfare/FL-Base")) {
-    producesModule("com.lucasalfare.flbase:FL-Base")
+include(":kgasc")
+include(":backend")
+
+pluginManagement {
+  repositories {
+    mavenCentral()
   }
 
-  gitRepository(java.net.URI("https://github.com/LucasAlfare/kGasC")) {
-    producesModule("com.lucasalfare.kgasc:kGasC")
+  plugins {
+    val kotlinVersion = extra["kotlin_version"] as String
+
+    kotlin("jvm") version kotlinVersion
+    id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion
   }
 }
