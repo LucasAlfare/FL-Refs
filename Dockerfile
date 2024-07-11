@@ -10,10 +10,10 @@ LABEL authors="Francisco Lucas"
 COPY . /app
 WORKDIR /app
 RUN cd /app
-RUN ./gradlew clean
+RUN gradle clean
 # gradle assemble is used to build without running tests
 # also daemons are not needed because gradle will be discarded
-RUN ./gradlew assemble --no-daemon
+RUN gradle assemble --no-daemon
 
 FROM openjdk:17-alpine as jdk_stage
 EXPOSE 80
