@@ -1,8 +1,8 @@
 package com.lucasalfare.flrefs.main.routes
 
 import com.lucasalfare.flrefs.main.cdnUploader
-import com.lucasalfare.flrefs.main.exposed.ImagesInfosRepository
-import com.lucasalfare.flrefs.main.exposed.ImagesUrlsRepository
+import com.lucasalfare.flrefs.main.data.exposed.ImagesInfosRepository
+import com.lucasalfare.flrefs.main.data.exposed.ImagesUrlsRepository
 import com.lucasalfare.flrefs.main.generateThumbnail
 import com.lucasalfare.flrefs.main.model.UploadRequestDTO
 import io.ktor.http.*
@@ -11,7 +11,13 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-// TODO: consider inserting into DB first, then CDN upload
+/**
+ * Defines a route for uploading an item with associated image data.
+ *
+ * This route handles POST requests to upload an image and associated information,
+ * including creating image info, uploading to a CDN, generating a thumbnail,
+ * and creating image URLs.
+ */
 fun Routing.uploadItemRoute() {
   post("/uploads") {
     call.receive<UploadRequestDTO>().also { req ->

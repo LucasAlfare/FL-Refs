@@ -5,9 +5,9 @@ import com.lucasalfare.flrefs.main.EnvsLoader.databasePoolSizeEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.databaseUrlEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.databaseUsernameEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.driverClassNameEnv
-import com.lucasalfare.flrefs.main.exposed.AppDB
-import com.lucasalfare.flrefs.main.exposed.ImagesInfos
-import com.lucasalfare.flrefs.main.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.data.exposed.AppDB
+import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
+import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
 import com.lucasalfare.flrefs.main.github.GithubCdnUploader
 import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
@@ -25,9 +25,16 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
 
+/**
+ * Variable representing the CDN uploader instance.
+ */
 var cdnUploader: CdnUploader = GithubCdnUploader
 
+/**
+ * Main function to start the application.
+ */
 fun main() {
+  // Initialize database connection and create tables if missing
   AppDB.initialize(
     jdbcUrl = databaseUrlEnv,
     jdbcDriverClassName = driverClassNameEnv,
@@ -39,6 +46,7 @@ fun main() {
     SchemaUtils.createMissingTablesAndColumns(ImagesUrls)
   }
 
+  // Start embedded server
   embeddedServer(Netty, port = 80) {
     configureCORS()
     configureSerialization()
@@ -47,6 +55,9 @@ fun main() {
   }.start(wait = true)
 }
 
+/**
+ * Configures routing for the application.
+ */
 internal fun Application.configureRouting() {
   routing {
     get("/hello") {
@@ -58,6 +69,9 @@ internal fun Application.configureRouting() {
   }
 }
 
+/**
+ * Configures CORS settings for the application.
+ */
 internal fun Application.configureCORS() {
   install(CORS) {
     anyHost()
@@ -67,12 +81,18 @@ internal fun Application.configureCORS() {
   }
 }
 
+/**
+ * Configures content serialization settings for the application.
+ */
 internal fun Application.configureSerialization() {
   install(ContentNegotiation) {
     json(Json { isLenient = false })
   }
 }
 
+/**
+ * Configures error handling and status pages for the application.
+ */
 internal fun Application.configureStatusPages() {
   install(StatusPages) {
     exception<Throwable> { call, cause ->

@@ -1,12 +1,17 @@
 package com.lucasalfare.flrefs.main.routes
 
 import com.lucasalfare.flrefs.main.BadRequest
-import com.lucasalfare.flrefs.main.exposed.ImagesGetterService
+import com.lucasalfare.flrefs.main.data.exposed.ImagesGetterService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Defines a route for retrieving all items based on query parameters.
+ *
+ * This route handles GET requests to fetch images with optional filtering, pagination, and search term.
+ */
 fun Routing.getAllItemsRoute() {
   get("/images") {
     val numItems = call.request.queryParameters["num_items"] ?: "0"

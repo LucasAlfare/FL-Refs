@@ -1,4 +1,4 @@
-package com.lucasalfare.flrefs.main.exposed
+package com.lucasalfare.flrefs.main.data.exposed
 
 import com.lucasalfare.flrefs.main.Constants
 import com.zaxxer.hikari.HikariConfig

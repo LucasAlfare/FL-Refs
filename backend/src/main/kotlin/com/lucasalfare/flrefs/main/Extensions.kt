@@ -3,15 +3,22 @@ package com.lucasalfare.flrefs.main
 import java.text.Normalizer
 
 /**
- * Custom function to get root [Throwable] cause.
+ * Custom function to recursively get the root cause of a [Throwable].
  *
- * This is used in order to not use the same function of the Ktor API due to it
- * be marked with [@InternalApi].
+ * This function is used to retrieve the root cause of an exception,
+ * avoiding the use of Ktor API functions marked with [@InternalApi].
+ *
+ * @return The root cause [Throwable].
  */
 fun Throwable.customRootCause(): Throwable {
   return if (cause == null) this else cause!!.customRootCause()
 }
 
+/**
+ * Removes accentuation marks from the string.
+ *
+ * @return A new string with accentuation marks removed.
+ */
 fun String.removeAccentuation() =
   Normalizer.normalize(
     this,

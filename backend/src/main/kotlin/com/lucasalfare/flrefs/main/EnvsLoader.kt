@@ -23,11 +23,13 @@ data class EnvValue(
           throw NullEnvironmentVariable("Server environment variable [$name] is missing/null")
         defaultWhenNull
       }
+
       it.isEmpty() -> {
         if (throwWhenEmpty)
           throw EmptyEnvironmentVariable("Server environment variable [$name] is missing/empty")
         defaultWhenEmpty
       }
+
       else -> it
     }
   }
