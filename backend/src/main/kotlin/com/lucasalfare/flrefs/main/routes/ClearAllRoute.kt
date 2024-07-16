@@ -21,7 +21,7 @@ fun Routing.clearAllItemsRoute() {
     return@delete AppDB.exposedQuery {
       transaction {
         SchemaUtils.listTables().forEach {
-          exec("DROP TABLE IF EXISTS $it")
+          exec("DROP TABLE IF EXISTS $it CASCADE")
         }
       }
       // TODO: include call to CDN clear
