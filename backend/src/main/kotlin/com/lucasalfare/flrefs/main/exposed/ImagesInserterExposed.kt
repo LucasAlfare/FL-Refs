@@ -1,10 +1,10 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AppServiceAdapter
+import com.lucasalfare.flrefs.main.AppRepositoryAdapter
 import com.lucasalfare.flrefs.main.UnavailableDatabaseService
 import org.jetbrains.exposed.sql.insert
 
-object ImagesInserterExposed : AppServiceAdapter() {
+object ImagesInserterExposed : AppRepositoryAdapter() {
 
   override suspend fun create(
     title: String,

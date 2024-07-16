@@ -13,8 +13,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 
-var imagesInserter: AppService = ImagesInserterExposed
-var imagesGetter: AppService = ImagesGetterExposed
+var imagesInserter: AppRepository = ImagesInserterExposed
+var imagesGetter: AppRepository = ImagesGetterExposed
 var cdnUploader: CdnUploader = GithubCdnUploader
 
 fun main() {

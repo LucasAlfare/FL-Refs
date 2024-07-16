@@ -4,6 +4,16 @@ import com.lucasalfare.flrefs.main.ValidationError
 import com.lucasalfare.flrefs.main.removeAccentuation
 import kotlinx.serialization.Serializable
 
+/**
+ * Data transfer object (DTO) representing an upload request.
+ *
+ * @property title The title of the upload request.
+ * @property description The description of the upload request.
+ * @property category The category of the upload request.
+ * @property name The name associated with the upload request.
+ * @property data The byte array data to be uploaded.
+ * @throws ValidationError If any of the required fields are blank or if the data format is not supported.
+ */
 @Suppress("ArrayInDataClass")
 @Serializable
 data class UploadRequestDTO(
@@ -29,8 +39,18 @@ data class UploadRequestDTO(
     name = name.removeAccentuation()
   }
 
+  /**
+   * Generates a concatenation of title, description, and category.
+   *
+   * @return A string concatenation of title, description, and category.
+   */
   fun getConcatenation() = buildString { append(title); append(description); append(category) }
 
+  /**
+   * Returns a string representation of the [UploadRequestDTO] object.
+   *
+   * @return A string representation of the object.
+   */
   override fun toString(): String {
     return "UploadRequestDTO(title=$title, description=$description, name=$name)"
   }
