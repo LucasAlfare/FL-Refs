@@ -1,11 +1,10 @@
 package com.lucasalfare.flrefs.main.github
 
-//import com.lucasalfare.flrefs.main.CdnUploader
 import com.lucasalfare.flrefs.main.CdnUploaderAdapter
 import com.lucasalfare.flrefs.main.EnvsLoader.loadEnv
 import com.lucasalfare.flrefs.main.UnavailableCdnService
-import com.lucasalfare.kgasc.main.GithubHelper
 import com.lucasalfare.kgasc.main.CdnUploadResponseDTO
+import com.lucasalfare.kgasc.main.GithubHelper
 
 /**
  * GitHub CDN uploader implementation using GitHub API for file uploads.

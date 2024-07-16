@@ -22,7 +22,7 @@ open class AppError(
  * @param customMessage A custom message describing the error. The default is "Error performing database operation."
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
  */
-class UnavailableDatabaseService(
+class UnavailableDatabaseRepository(
   customMessage: String = "Error performing database operation.",
   status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : AppError(customMessage, status)

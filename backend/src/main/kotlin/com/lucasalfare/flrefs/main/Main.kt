@@ -6,8 +6,12 @@ import com.lucasalfare.flrefs.main.EnvsLoader.databaseUrlEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.databaseUsernameEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.driverClassNameEnv
 import com.lucasalfare.flrefs.main.exposed.AppDB
-import com.lucasalfare.flrefs.main.exposed.Images
+import com.lucasalfare.flrefs.main.exposed.ImagesInfos
+import com.lucasalfare.flrefs.main.exposed.ImagesUrls
 import com.lucasalfare.flrefs.main.github.GithubCdnUploader
+import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
+import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
+import com.lucasalfare.flrefs.main.routes.uploadItemRoute
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -31,7 +35,8 @@ fun main() {
     password = databasePasswordEnv,
     maximumPoolSize = databasePoolSizeEnv.toInt()
   ) {
-    SchemaUtils.createMissingTablesAndColumns(Images)
+    SchemaUtils.createMissingTablesAndColumns(ImagesInfos)
+    SchemaUtils.createMissingTablesAndColumns(ImagesUrls)
   }
 
   embeddedServer(Netty, port = 80) {
@@ -40,6 +45,17 @@ fun main() {
     configureStatusPages()
     configureRouting()
   }.start(wait = true)
+}
+
+internal fun Application.configureRouting() {
+  routing {
+    get("/hello") {
+      call.respondText("Hello! We are healthy!! :)")
+    }
+    uploadItemRoute()
+    getAllItemsRoute()
+    clearAllItemsRoute()
+  }
 }
 
 internal fun Application.configureCORS() {
@@ -82,11 +98,5 @@ internal fun Application.configureStatusPages() {
         }
       }
     }
-  }
-}
-
-internal fun Application.configureRouting() {
-  routing {
-    //
   }
 }
