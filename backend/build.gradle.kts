@@ -10,7 +10,7 @@ plugins {
   application
 }
 
-group = "com.com.lucasalfare.flrefs"
+group = "com.lucasalfare.flrefs"
 version = "1.0"
 
 dependencies {

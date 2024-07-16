@@ -8,7 +8,7 @@ plugins {
   id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-group = "com.com.lucasalfare.flrefs"
+group = "com.lucasalfare.flrefs"
 version = "1.0"
 
 dependencies {

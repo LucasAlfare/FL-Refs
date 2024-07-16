@@ -1,4 +1,6 @@
-group = "com.com.lucasalfare.flrefs"
+@file:Suppress("SpellCheckingInspection")
+
+group = "com.lucasalfare.flrefs"
 version = "1.0"
 
 plugins {

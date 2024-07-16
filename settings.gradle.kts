@@ -1,7 +1,9 @@
 rootProject.name = "FL-Refs"
 
-include(":kgasc")
-include(":backend")
+include(
+  ":kgasc",
+  ":backend"
+)
 
 pluginManagement {
   repositories {
