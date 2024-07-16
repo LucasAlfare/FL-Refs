@@ -22,11 +22,17 @@ class Constants {
     const val SQLITE_DRIVER = "org.sqlite.JDBC"
 
     /**
-     * The default maximum pool size for database.
+     * The default maximum pool size for database connections.
+     *
      * This is used if none is manually defined.
      */
     const val DEFAULT_MAXIMUM_POOL_SIZE = 6
 
+    /**
+     * The default port number for the web server.
+     *
+     * This port is used if none is manually defined.
+     */
     const val DEFAULT_WEB_SERVER_PORT = 80
   }
 }

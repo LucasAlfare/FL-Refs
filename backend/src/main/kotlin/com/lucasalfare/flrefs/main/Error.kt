@@ -12,7 +12,7 @@ import io.ktor.http.*
  * @property status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
  */
 open class AppError(
-  val customMessage: String?,
+  val customMessage: String = "",
   val status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : Throwable()
 
@@ -22,7 +22,7 @@ open class AppError(
  * @param customMessage A custom message describing the error. The default is "Error performing database operation."
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
  */
-class UnavailableDatabaseService(
+class UnavailableDatabaseRepository(
   customMessage: String = "Error performing database operation.",
   status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : AppError(customMessage, status)
@@ -60,16 +60,34 @@ class ValidationError(
   status: HttpStatusCode = HttpStatusCode.BadRequest
 ) : AppError(customMessage, status)
 
+/**
+ * Represents an error that occurs when a required environment variable is null.
+ *
+ * @param customMessage A custom message describing the error. The default is "Missing an environment variable in server (null)".
+ * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
+ */
 class NullEnvironmentVariable(
   customMessage: String = "Missing an environment variable in server (null)",
   status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : AppError(customMessage, status)
 
+/**
+ * Represents an error that occurs when a required environment variable is empty.
+ *
+ * @param customMessage A custom message describing the error. The default is "Missing an environment variable in server (empty)".
+ * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
+ */
 class EmptyEnvironmentVariable(
   customMessage: String = "Missing an environment variable in server (empty)",
   status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : AppError(customMessage, status)
 
+/**
+ * Represents an error that occurs when a CDN service is unavailable.
+ *
+ * @param customMessage A custom message describing the error. The default is "CDN Unavailable".
+ * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.UnprocessableEntity`.
+ */
 class UnavailableCdnService(
   customMessage: String = "CDN Unavailable",
   status: HttpStatusCode = HttpStatusCode.UnprocessableEntity

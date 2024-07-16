@@ -3,7 +3,18 @@ package com.lucasalfare.flrefs.main.model
 import com.lucasalfare.flrefs.main.ValidationError
 import com.lucasalfare.flrefs.main.removeAccentuation
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+/**
+ * Data transfer object (DTO) representing an upload request.
+ *
+ * @property title The title of the upload request.
+ * @property description The description of the upload request.
+ * @property category The category of the upload request.
+ * @property name The name associated with the upload request.
+ * @property data The byte array data to be uploaded.
+ * @throws ValidationError If any of the required fields are blank or if the data format is not supported.
+ */
 @Suppress("ArrayInDataClass")
 @Serializable
 data class UploadRequestDTO(
@@ -14,6 +25,9 @@ data class UploadRequestDTO(
   var data: ByteArray
 ) {
 
+  @Transient
+  lateinit var concatenation: String
+
   init {
     if (title.isBlank()) throw ValidationError("Title cannot be blank")
     if (description.isBlank()) throw ValidationError("Description cannot be blank")
@@ -23,15 +37,22 @@ data class UploadRequestDTO(
     if (name.split(".").last().lowercase().contains("webp"))
       throw ValidationError("WEBP format is not supported yet.")
 
+    concatenation = "$title$description$category"
+
     title = title.replace(" ", "_").lowercase().removeAccentuation()
     description = description.removeAccentuation()
     category = category.removeAccentuation()
     name = name.removeAccentuation()
+
+    concatenation += "$title$description$category"
   }
 
-  fun getConcatenation() = buildString { append(title); append(description); append(category) }
-
+  /**
+   * Returns a string representation of the [UploadRequestDTO] object.
+   *
+   * @return A string representation of the object.
+   */
   override fun toString(): String {
-    return "UploadRequestDTO(title=$title, description=$description, name=$name)"
+    return "UploadRequestDTO(title=$title, description=$description, name=$name, concatenation=$concatenation)"
   }
 }
