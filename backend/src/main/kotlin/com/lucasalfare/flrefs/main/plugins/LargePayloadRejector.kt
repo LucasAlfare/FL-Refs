@@ -38,10 +38,10 @@ class LargePayloadRejector {
 
       pipeline.intercept(ApplicationCallPipeline.Plugins) {
         val contentLength = call.request.header(HttpHeaders.ContentLength)?.toLong()
-        if (contentLength != null && contentLength > 10_000) {
+        if (contentLength != null && contentLength > 10_000 * 1000) {
           call.respond(
             HttpStatusCode.PayloadTooLarge,
-            "File is too large. Maximum allowed size is 10_000 bytes."
+            "File is too large. Maximum allowed size is 10_000 * 1000 bytes."
           )
           finish()
         }
