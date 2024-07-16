@@ -1,7 +1,7 @@
 rootProject.name = "FL-Refs"
 
 include(
-  ":kgasc",
+  ":github-wrapper",
   ":backend"
 )
 

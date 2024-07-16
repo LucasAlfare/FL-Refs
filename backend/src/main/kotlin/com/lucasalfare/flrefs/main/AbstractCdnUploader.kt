@@ -1,6 +1,6 @@
 package com.lucasalfare.flrefs.main
 
-import com.lucasalfare.kgasc.main.GithubUploadResponseDTO
+import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
 
 /**
  * Interface defining operations for uploading files to a Content Delivery Network (CDN).

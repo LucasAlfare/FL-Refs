@@ -1,4 +1,4 @@
-package com.lucasalfare.kgasc.main
+package com.lucasalfare.githubwrapper.main
 
 import io.ktor.client.*
 import io.ktor.client.call.*

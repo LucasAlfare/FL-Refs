@@ -14,7 +14,7 @@ group = "com.lucasalfare.flrefs"
 version = "1.0"
 
 dependencies {
-  implementation(project(":kgasc"))
+  implementation(project(":github-wrapper"))
 
   // Ktor (base and engine)
   implementation("io.ktor:ktor-server-core:$ktor_version")
