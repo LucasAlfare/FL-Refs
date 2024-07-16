@@ -16,4 +16,4 @@ This server was made using:
 
 ### Additional info
 
-More information about architecture, building, running and usage will be included soon.
+More information about architecture, environments variables required, building, running and usage will be included soon.
