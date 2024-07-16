@@ -10,9 +10,8 @@ import java.text.Normalizer
  *
  * @return The root cause [Throwable].
  */
-fun Throwable.customRootCause(): Throwable {
-  return if (cause == null) this else cause!!.customRootCause()
-}
+fun Throwable.customRootCause(): Throwable =
+  if (cause == null) this else cause!!.customRootCause()
 
 /**
  * Removes accentuation marks from the string.
