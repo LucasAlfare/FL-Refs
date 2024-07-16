@@ -36,6 +36,7 @@ data class UploadRequestDTO(
     if (data.isEmpty()) throw ValidationError("Data cannot be empty")
     if (name.split(".").last().lowercase().contains("webp"))
       throw ValidationError("WEBP format is not supported yet.")
+    if (data.size > 10_000) throw ValidationError("Data is too large (> 10k bytes)")
 
     concatenation = "$title$description$category"
 
