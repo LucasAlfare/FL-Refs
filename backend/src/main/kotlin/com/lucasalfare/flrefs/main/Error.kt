@@ -12,7 +12,7 @@ import io.ktor.http.*
  * @property status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
  */
 open class AppError(
-  val customMessage: String?,
+  val customMessage: String = "",
   val status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : Throwable()
 

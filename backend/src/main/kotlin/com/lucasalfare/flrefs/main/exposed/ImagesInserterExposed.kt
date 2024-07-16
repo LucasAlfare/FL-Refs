@@ -1,12 +1,11 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AppRepositoryAdapter
 import com.lucasalfare.flrefs.main.UnavailableDatabaseService
 import org.jetbrains.exposed.sql.insert
 
-object ImagesInserterExposed : AppRepositoryAdapter() {
+object ImagesInserterExposed {
 
-  override suspend fun create(
+  suspend fun create(
     title: String,
     description: String,
     category: String,

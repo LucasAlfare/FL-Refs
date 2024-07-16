@@ -17,6 +17,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
  *
  * TODO: remove specific Exposed impl code to dedicated abstraction
  */
+@Suppress("MemberVisibilityCanBePrivate")
 object AppDB {
 
   /**
@@ -28,7 +29,7 @@ object AppDB {
   /**
    * The Exposed Database instance, lazily initialized using the HikariDataSource.
    */
-  val DB by lazy { Database.connect(hikariDataSource) }
+  internal val DB by lazy { Database.connect(hikariDataSource) }
 
   /**
    * Initializes the database connection using the provided parameters.

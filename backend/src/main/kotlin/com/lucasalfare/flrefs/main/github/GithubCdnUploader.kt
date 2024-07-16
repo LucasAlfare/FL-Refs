@@ -5,7 +5,7 @@ import com.lucasalfare.flrefs.main.CdnUploaderAdapter
 import com.lucasalfare.flrefs.main.EnvsLoader.loadEnv
 import com.lucasalfare.flrefs.main.UnavailableCdnService
 import com.lucasalfare.kgasc.main.GithubHelper
-import com.lucasalfare.kgasc.main.UploadResponseDTO
+import com.lucasalfare.kgasc.main.CdnUploadResponseDTO
 
 /**
  * GitHub CDN uploader implementation using GitHub API for file uploads.
@@ -25,10 +25,10 @@ object GithubCdnUploader : CdnUploaderAdapter() {
    * @param name The name of the file to be uploaded.
    * @param data The byte array containing the file data.
    * @param targetPath The target path on the CDN where the file should be uploaded.
-   * @return An instance of [UploadResponseDTO] containing information about the upload operation.
+   * @return An instance of [CdnUploadResponseDTO] containing information about the upload operation.
    * @throws UnavailableCdnService If the upload operation fails or the CDN service is unavailable.
    */
-  override suspend fun upload(name: String, data: ByteArray, targetPath: String): UploadResponseDTO {
+  override suspend fun upload(name: String, data: ByteArray, targetPath: String): CdnUploadResponseDTO {
     // Construct target path in the GitHub repository
     val targetPathInRepository = "$ROOT_DIRECTORY/$targetPath"
 

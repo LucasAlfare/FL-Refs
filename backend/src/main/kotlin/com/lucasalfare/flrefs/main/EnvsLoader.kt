@@ -45,22 +45,22 @@ data class EnvValue(
  */
 object EnvsLoader {
   // Commonly used environment variables
-  internal val driverClassName = EnvValue(
+  internal val driverClassNameEnv = EnvValue(
     "DB_JDBC_DRIVER",
     Constants.SQLITE_DRIVER,
     Constants.SQLITE_DRIVER
   ).toString()
 
-  internal val databaseUrl = EnvValue(
+  internal val databaseUrlEnv = EnvValue(
     "DB_JDBC_URL",
     Constants.SQLITE_URL,
     Constants.SQLITE_URL
   ).toString()
 
-  internal val databaseUsername = EnvValue("DB_USERNAME", "", "").toString()
-  internal val databasePassword = EnvValue("DB_PASSWORD", "", "").toString()
+  internal val databaseUsernameEnv = EnvValue("DB_USERNAME", "", "").toString()
+  internal val databasePasswordEnv = EnvValue("DB_PASSWORD", "", "").toString()
 
-  internal val databasePoolSize = EnvValue(
+  internal val databasePoolSizeEnv = EnvValue(
     "DB_POOL_SIZE",
     Constants.DEFAULT_MAXIMUM_POOL_SIZE.toString(),
     Constants.DEFAULT_MAXIMUM_POOL_SIZE.toString()

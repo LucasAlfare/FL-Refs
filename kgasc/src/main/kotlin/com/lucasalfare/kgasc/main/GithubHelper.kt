@@ -30,15 +30,15 @@ private data class UploadRequestDTO(
 )
 
 @Serializable
-data class UploadResponseContent(
+data class CdnUploadResponseContent(
   val name: String,
   val path: String,
   @SerialName("download_url") val downloadUrl: String
 )
 
 @Serializable
-data class UploadResponseDTO(
-  val content: UploadResponseContent
+data class CdnUploadResponseDTO(
+  val content: CdnUploadResponseContent
 )
 
 object GithubHelper {
@@ -52,7 +52,7 @@ object GithubHelper {
     inputFilePath: String,
     targetPathInRepository: String, // omits file name, will be the same of input file
     commitMessage: String = "Upload file via my custom API wrapper 🛠"
-  ): UploadResponseDTO? {
+  ): CdnUploadResponseDTO? {
     val tmpFile = File(inputFilePath)
 
     return uploadFileToGithub(
@@ -75,7 +75,7 @@ object GithubHelper {
     inputFileBytes: ByteArray,
     targetPathInRepository: String, // omits file name, will be the same of input file
     commitMessage: String = "Upload file via my custom API wrapper 🛠"
-  ): UploadResponseDTO? {
+  ): CdnUploadResponseDTO? {
     initClient()
 
     val fileContentBase64 = Base64.encode(inputFileBytes)
@@ -103,7 +103,7 @@ object GithubHelper {
     println("[GithubHelper] Response of github uploading: $response")
 
     val result = if (response.status == HttpStatusCode.Created || response.status == HttpStatusCode.OK) {
-      response.body<UploadResponseDTO>()
+      response.body<CdnUploadResponseDTO>()
     } else {
       null
     }

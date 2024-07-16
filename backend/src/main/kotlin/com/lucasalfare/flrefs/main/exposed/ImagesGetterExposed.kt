@@ -1,13 +1,12 @@
 package com.lucasalfare.flrefs.main.exposed
 
-import com.lucasalfare.flrefs.main.AppRepositoryAdapter
 import com.lucasalfare.flrefs.main.model.ItemResponseDTO
 import org.jetbrains.exposed.sql.selectAll
 
 private const val MAX_PAGE_ITEMS = 10
 
-object ImagesGetterExposed : AppRepositoryAdapter() {
-  override suspend fun getAll(term: String, maxItems: Int, offset: Int) =
+object ImagesGetterExposed {
+  suspend fun getAll(term: String, maxItems: Int, offset: Int) =
     AppDB.exposedQuery {
       Images
         .selectAll()
