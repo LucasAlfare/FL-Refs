@@ -16,8 +16,10 @@ class LargePayloadRejector {
    */
   class LargePayloadRejectorConfiguration
 
-  companion object Plugin :
-    BaseApplicationPlugin<ApplicationCallPipeline, LargePayloadRejectorConfiguration, LargePayloadRejector> {
+  companion object Plugin : BaseApplicationPlugin<
+          ApplicationCallPipeline,
+          LargePayloadRejectorConfiguration,
+          LargePayloadRejector> {
 
     override val key = AttributeKey<LargePayloadRejector>("LargePayloadRejector")
 
