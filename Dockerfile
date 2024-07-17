@@ -1,4 +1,4 @@
-## TODO: this is temporary. Switch to multi-stage after development.
+### TODO: this is temporary. Switch to multi-stage after development.
 #FROM openjdk:17-alpine as jdk_stage
 #EXPOSE 80
 #RUN mkdir /app
