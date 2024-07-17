@@ -21,6 +21,8 @@ dependencies {
   api("io.ktor:ktor-client-content-negotiation:$ktor_version")
   api("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
+  implementation("ch.qos.logback:logback-classic:1.5.3")
+
   testImplementation("io.ktor:ktor-client-mock:$ktor_version") // Mock de cliente HTTP Ktor
   testImplementation("org.jetbrains.kotlin:kotlin-test")
 }

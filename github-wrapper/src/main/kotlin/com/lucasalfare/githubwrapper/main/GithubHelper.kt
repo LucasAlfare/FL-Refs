@@ -7,20 +7,18 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.isActive
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import java.io.File
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 
 @Serializable
-private data class Committer(val name: String, val email: String)
+data class Committer(val name: String, val email: String)
 
 @Serializable
-private data class GithubUploadRequestDTO(
+data class GithubUploadRequestDTO(
   val message: String,
   val committer: Committer,
   val content: String
@@ -40,27 +38,16 @@ data class GithubUploadResponseDTO(
 
 object GithubHelper {
 
-  internal lateinit var client: HttpClient
-
-  suspend fun uploadFileToGithub(
-    githubToken: String,
-    username: String,
-    repository: String,
-    inputFilePath: String,
-    targetPathInRepository: String, // omits file name, will be the same of input file
-    commitMessage: String = "Upload file via my custom API wrapper 🛠"
-  ): GithubUploadResponseDTO? {
-    val tmpFile = File(inputFilePath)
-
-    return uploadFileToGithub(
-      githubToken = githubToken,
-      username = username,
-      repository = repository,
-      inputFileName = tmpFile.name,
-      inputFileBytes = tmpFile.readBytes(),
-      targetPathInRepository = targetPathInRepository,
-      commitMessage = commitMessage
-    )
+  var client: HttpClient = HttpClient(CIO) {
+    install(ContentNegotiation) {
+      json(
+        Json {
+          isLenient = false
+          prettyPrint = true
+          ignoreUnknownKeys = true
+        }
+      )
+    }
   }
 
   @OptIn(ExperimentalEncodingApi::class)
@@ -73,8 +60,6 @@ object GithubHelper {
     targetPathInRepository: String, // omits file name, will be the same of input file
     commitMessage: String = "Upload file via my custom API wrapper 🛠"
   ): GithubUploadResponseDTO? {
-    initClient()
-
     val fileContentBase64 = Base64.encode(inputFileBytes)
     val finalTargetPath = "$targetPathInRepository/$inputFileName"
 
@@ -99,30 +84,14 @@ object GithubHelper {
 
     println("[GithubHelper] Response of github uploading: $response")
 
-    val result = if (response.status == HttpStatusCode.Created || response.status == HttpStatusCode.OK) {
-      response.body<GithubUploadResponseDTO>()
-    } else {
-      null
-    }
+      val result = if (response.status == HttpStatusCode.Created) {
+        response.body<GithubUploadResponseDTO>()
+      } else {
+        null
+      }
 
     return result.also {
       client.close()
-    }
-  }
-
-  private fun initClient() {
-    if (!GithubHelper::client.isInitialized || !client.isActive) {
-      client = HttpClient(CIO) {
-        install(ContentNegotiation) {
-          json(
-            Json {
-              isLenient = false
-              prettyPrint = true
-              ignoreUnknownKeys = true
-            }
-          )
-        }
-      }
     }
   }
 }

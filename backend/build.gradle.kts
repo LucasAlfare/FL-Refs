@@ -57,6 +57,8 @@ dependencies {
   implementation("net.coobird:thumbnailator:$thumbnailator_version")
   implementation("ch.qos.logback:logback-classic:1.5.3")
 
+  testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+  testImplementation("io.ktor:ktor-client-mock:$ktor_version") // Mock de cliente HTTP Ktor
   testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 

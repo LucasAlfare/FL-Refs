@@ -29,23 +29,16 @@ import org.jetbrains.exposed.sql.SchemaUtils
 /**
  * Variable representing the CDN uploader instance.
  */
-var cdnUploader: CdnUploader = GithubCdnUploader
+lateinit var cdnUploader: CdnUploader
 
 /**
  * Main function to start the application.
  */
 fun main() {
   // Initialize database connection and create tables if missing
-  AppDB.initialize(
-    jdbcUrl = databaseUrlEnv,
-    jdbcDriverClassName = driverClassNameEnv,
-    username = databaseUsernameEnv,
-    password = databasePasswordEnv,
-    maximumPoolSize = databasePoolSizeEnv.toInt()
-  ) {
-    SchemaUtils.createMissingTablesAndColumns(ImagesInfos)
-    SchemaUtils.createMissingTablesAndColumns(ImagesUrls)
-  }
+  initDatabase()
+
+  cdnUploader = GithubCdnUploader
 
   // Start embedded server
   embeddedServer(Netty, port = 80) {
@@ -56,6 +49,20 @@ fun main() {
     configureRouting()
   }.start(wait = true)
 }
+
+fun initDatabase() {
+  AppDB.initialize(
+    jdbcUrl = databaseUrlEnv,
+    jdbcDriverClassName = driverClassNameEnv,
+    username = databaseUsernameEnv,
+    password = databasePasswordEnv,
+    maximumPoolSize = databasePoolSizeEnv.toInt()
+  ) {
+    SchemaUtils.createMissingTablesAndColumns(ImagesInfos)
+    SchemaUtils.createMissingTablesAndColumns(ImagesUrls)
+  }
+}
+
 
 /**
  * Configures routing for the application.

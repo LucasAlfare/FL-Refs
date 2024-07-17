@@ -14,7 +14,7 @@ import io.ktor.http.*
 open class AppError(
   val customMessage: String = "",
   val status: HttpStatusCode = HttpStatusCode.InternalServerError
-) : Throwable()
+) : Throwable(message = customMessage)
 
 /**
  * Represents an error that occurs when the database service is unavailable.
