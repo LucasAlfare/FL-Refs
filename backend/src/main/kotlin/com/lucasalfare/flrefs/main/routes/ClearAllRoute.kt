@@ -8,6 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
@@ -22,8 +23,13 @@ fun Routing.clearAllItemsRoute() {
   delete("/clear") {
     return@delete AppDB.exposedQuery {
       transaction {
+        val databaseType = TransactionManager.current().db.dialect.name.lowercase()
+        val cascade =
+          if (databaseType.contains("PostgreSQL".lowercase())) " CASCADE"
+          else ""
+
         SchemaUtils.listTables().forEach {
-          exec("DROP TABLE IF EXISTS $it CASCADE")
+          exec("DROP TABLE IF EXISTS $it$cascade")
         }
 
         SchemaUtils.createMissingTablesAndColumns(ImagesInfos, ImagesUrls)

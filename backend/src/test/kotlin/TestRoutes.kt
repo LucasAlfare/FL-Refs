@@ -69,8 +69,6 @@ class TestRoutes {
     assertEquals(HttpStatusCode.Created, uploadResult.status)
     assertTrue(uploadResult.body<Int>() > 0)
   }
-
-
 }
 
 private fun createMockHttpClient(resultName: String): HttpClient {

@@ -7,6 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.isActive
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -38,17 +39,7 @@ data class GithubUploadResponseDTO(
 
 object GithubHelper {
 
-  var client: HttpClient = HttpClient(CIO) {
-    install(ContentNegotiation) {
-      json(
-        Json {
-          isLenient = false
-          prettyPrint = true
-          ignoreUnknownKeys = true
-        }
-      )
-    }
-  }
+  lateinit var client: HttpClient
 
   @OptIn(ExperimentalEncodingApi::class)
   suspend fun uploadFileToGithub(
@@ -60,6 +51,20 @@ object GithubHelper {
     targetPathInRepository: String, // omits file name, will be the same of input file
     commitMessage: String = "Upload file via my custom API wrapper 🛠"
   ): GithubUploadResponseDTO? {
+    if (!this::client.isInitialized || !client.isActive) {
+      client = HttpClient(CIO) {
+        install(ContentNegotiation) {
+          json(
+            Json {
+              isLenient = false
+              prettyPrint = true
+              ignoreUnknownKeys = true
+            }
+          )
+        }
+      }
+    }
+
     val fileContentBase64 = Base64.encode(inputFileBytes)
     val finalTargetPath = "$targetPathInRepository/$inputFileName"
 
@@ -84,11 +89,11 @@ object GithubHelper {
 
     println("[GithubHelper] Response of github uploading: $response")
 
-      val result = if (response.status == HttpStatusCode.Created) {
-        response.body<GithubUploadResponseDTO>()
-      } else {
-        null
-      }
+    val result = if (response.status == HttpStatusCode.Created) {
+      response.body<GithubUploadResponseDTO>()
+    } else {
+      null
+    }
 
     return result.also {
       client.close()
