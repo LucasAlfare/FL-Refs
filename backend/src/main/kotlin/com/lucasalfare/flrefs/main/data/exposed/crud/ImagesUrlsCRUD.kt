@@ -34,17 +34,19 @@ object ImagesUrlsCRUD {
         )
       }
     } catch (e: Exception) {
-      throw UnavailableDatabaseRepository()
+      throw UnavailableDatabaseRepository("Could not to insert image URLs in the database.")
     }
   }
 
   suspend fun read(relatedImageInfoTitle: String) = AppDB.exposedQuery {
     try {
       ImagesUrls.selectAll().where { ImagesUrls.relatedImageInfoTitle eq relatedImageInfoTitle }
-        .mapNotNull { toImageUrl(it) }
-        .singleOrNull()
+        .map { toImageUrl(it) }
+        .single()
     } catch (e: Exception) {
-      throw UnavailableDatabaseRepository()
+      throw UnavailableDatabaseRepository(
+        "Could not to retrieve URLs from the requested related image info title"
+      )
     }
   }
 

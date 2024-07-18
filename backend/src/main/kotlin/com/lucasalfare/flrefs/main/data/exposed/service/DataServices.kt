@@ -29,9 +29,9 @@ object DataServices {
     thumbnailUrl = thumbnailUrl
   ).id
 
-  suspend fun getAllDataAsItemResponseDTO(term: String = "", maxItems: Int = 0, offset: Int = 0) {
+  suspend fun getAllDataAsItemResponseDTO(term: String = "", maxItems: Int = 0, offset: Int = 0) =
     ImagesInfosCRUD.readAll(term, maxItems, offset).map {
-      val relatedUrls = ImagesUrlsCRUD.read(relatedImageInfoTitle = it.name)!!
+      val relatedUrls = ImagesUrlsCRUD.read(relatedImageInfoTitle = it.title)
 
       ItemResponseDTO(
         id = it.id,
@@ -43,7 +43,6 @@ object DataServices {
         thumbnailUrl = relatedUrls.thumbnailUrl
       )
     }
-  }
 
   suspend fun uploadImageToCdn(req: UploadRequestDTO, isThumbnail: Boolean = false): GithubUploadResponseDTO {
     val nextNameAndBytes =
