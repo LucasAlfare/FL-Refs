@@ -21,11 +21,11 @@ object ImagesUrlsCRUD {
     thumbnailUrl: String
   ) = AppDB.exposedQuery {
     try {
-      ImagesUrls.insert {
+      ImagesUrls.insertReturning {
         it[ImagesUrls.relatedImageInfoTitle] = relatedImageInfoTitle
         it[ImagesUrls.originalUrl] = originalUrl
         it[ImagesUrls.thumbnailUrl] = thumbnailUrl
-      }.resultedValues!!.singleOrNull()!!.let {
+      }.singleOrNull()!!.let {
         ImageUrl(
           id = it[ImagesUrls.id].value,
           relatedImageInfoTitle = it[ImagesUrls.relatedImageInfoTitle],

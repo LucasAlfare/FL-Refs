@@ -31,13 +31,13 @@ object ImagesInfosCRUD {
     concatenation: String
   ) = AppDB.exposedQuery {
     try {
-      ImagesInfos.insert {
+      ImagesInfos.insertReturning {
         it[ImagesInfos.title] = title
         it[ImagesInfos.description] = description
         it[ImagesInfos.category] = category
         it[ImagesInfos.name] = name
         it[ImagesInfos.concatenation] = concatenation
-      }.resultedValues!!.singleOrNull()!!.let {
+      }.singleOrNull()!!.let {
         ImageInfo(
           id = it[ImagesInfos.id].value,
           createdAt = it[ImagesInfos.createdAt],
@@ -49,7 +49,7 @@ object ImagesInfosCRUD {
         )
       }
     } catch (e: Exception) {
-      throw UnavailableDatabaseRepository()
+      throw UnavailableDatabaseRepository("Can not to insert Image Info data")
     }
   }
 
@@ -60,7 +60,7 @@ object ImagesInfosCRUD {
         .mapNotNull { toImageInfo(it) }
         .singleOrNull()
     } catch (e: Exception) {
-      throw UnavailableDatabaseRepository()
+      throw UnavailableDatabaseRepository("Can not to get/select the Image Info from database.")
     }
   }
 

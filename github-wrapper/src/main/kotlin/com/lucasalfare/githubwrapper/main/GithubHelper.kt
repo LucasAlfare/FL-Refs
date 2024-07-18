@@ -39,7 +39,17 @@ data class GithubUploadResponseDTO(
 
 object GithubHelper {
 
-  lateinit var client: HttpClient
+  var client = HttpClient(CIO) {
+    install(ContentNegotiation) {
+      json(
+        Json {
+          isLenient = false
+          prettyPrint = true
+          ignoreUnknownKeys = true
+        }
+      )
+    }
+  }
 
   @OptIn(ExperimentalEncodingApi::class)
   suspend fun uploadFileToGithub(
@@ -51,20 +61,6 @@ object GithubHelper {
     targetPathInRepository: String, // omits file name, will be the same of input file
     commitMessage: String = "Upload file via my custom API wrapper 🛠"
   ): GithubUploadResponseDTO? {
-    if (!this::client.isInitialized || !client.isActive) {
-      client = HttpClient(CIO) {
-        install(ContentNegotiation) {
-          json(
-            Json {
-              isLenient = false
-              prettyPrint = true
-              ignoreUnknownKeys = true
-            }
-          )
-        }
-      }
-    }
-
     val fileContentBase64 = Base64.encode(inputFileBytes)
     val finalTargetPath = "$targetPathInRepository/$inputFileName"
 
@@ -95,8 +91,6 @@ object GithubHelper {
       null
     }
 
-    return result.also {
-      client.close()
-    }
+    return result
   }
 }
