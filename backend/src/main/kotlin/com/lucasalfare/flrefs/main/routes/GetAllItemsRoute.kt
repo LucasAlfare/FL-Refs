@@ -1,7 +1,7 @@
 package com.lucasalfare.flrefs.main.routes
 
 import com.lucasalfare.flrefs.main.BadRequest
-import com.lucasalfare.flrefs.main.data.exposed.ImagesGetterService
+import com.lucasalfare.flrefs.main.data.exposed.service.DataServices.getAllDataAsItemResponseDTO
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -22,7 +22,9 @@ fun Routing.getAllItemsRoute() {
       throw BadRequest("Bad GET query parameters")
     }
 
-    ImagesGetterService.getAll(term, numItems.toInt(), page.toInt()).let {
+    getAllDataAsItemResponseDTO(
+      term, numItems.toInt(), page.toInt()
+    ).let {
       return@get call.respond(HttpStatusCode.OK, it)
     }
   }

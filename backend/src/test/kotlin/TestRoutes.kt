@@ -1,6 +1,7 @@
 import com.lucasalfare.flrefs.main.*
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.model.ItemResponseDTO
 import com.lucasalfare.flrefs.main.model.UploadRequestDTO
 import com.lucasalfare.githubwrapper.main.GithubHelper
 import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
@@ -37,19 +38,8 @@ class TestRoutes {
   }
 
   @Test
-  fun testUpload() = testApplication {
-    application {
-      configureCORS()
-      configureSerialization()
-      configureStatusPages()
-      configureLargePayloadRejector()
-      configureRouting()
-    }
-    val testClient = createClient {
-      install(ContentNegotiation) {
-        json(Json { isLenient = false })
-      }
-    }
+  fun `test upload POST`() = testApplication {
+    val testClient = setup()
     val uploadResult = testClient.post("/uploads") {
       contentType(ContentType.Application.Json)
 
@@ -68,6 +58,192 @@ class TestRoutes {
     }
     assertEquals(HttpStatusCode.Created, uploadResult.status)
     assertTrue(uploadResult.body<Int>() > 0)
+  }
+
+  @Test
+  fun `test general get GET`() = testApplication {
+    val testClient = setup()
+
+    testClient.post("/uploads") {
+      contentType(ContentType.Application.Json)
+
+      val fileName = "test_img.jpg"
+      val bytes = Files.readAllBytes(Path("src/test/resources/$fileName"))
+
+      setBody(
+        UploadRequestDTO(
+          title = "fake-title",
+          description = "fake-description",
+          category = "fake-category",
+          name = fileName,
+          data = bytes
+        )
+      )
+    }
+
+    val getResult = testClient.get("/images")
+    val resultBody = getResult.body<List<ItemResponseDTO>>()
+    assertEquals(HttpStatusCode.OK, getResult.status)
+    assertTrue(resultBody.isNotEmpty())
+  }
+
+  @Test
+  fun `test num_items get GET`() = testApplication {
+    val testClient = setup()
+
+    repeat(10) {
+      testClient.post("/uploads") {
+        contentType(ContentType.Application.Json)
+
+        val fileName = "test_img.jpg"
+        val bytes = Files.readAllBytes(Path("src/test/resources/$fileName"))
+
+        setBody(
+          UploadRequestDTO(
+            title = "fake-title-$it",
+            description = "fake-description",
+            category = "fake-category",
+            name = fileName,
+            data = bytes
+          )
+        )
+      }
+    }
+
+    val getResult = testClient.get("/images") {
+      parameter("num_items", 2)
+    }
+
+    val resultBody = getResult.body<List<ItemResponseDTO>>()
+    assertEquals(HttpStatusCode.OK, getResult.status)
+    assertTrue(resultBody.size == 2)
+  }
+
+  @Test
+  fun `test offset get GET`() = testApplication {
+    val testClient = setup()
+
+    repeat(10) {
+      testClient.post("/uploads") {
+        contentType(ContentType.Application.Json)
+
+        val fileName = "test_img.jpg"
+        val bytes = Files.readAllBytes(Path("src/test/resources/$fileName"))
+
+        setBody(
+          UploadRequestDTO(
+            title = "fake-title-$it",
+            description = "fake-description",
+            category = "fake-category",
+            name = fileName,
+            data = bytes
+          )
+        )
+      }
+    }
+
+    val getResult = testClient.get("/images") {
+      parameter("num_items", 2)
+      parameter("page", 2)
+    }
+
+    val resultBody = getResult.body<List<ItemResponseDTO>>()
+    assertEquals(HttpStatusCode.OK, getResult.status)
+    assertTrue(resultBody.first().id == 3)
+  }
+
+  @Test
+  fun `test term get GET`() = testApplication {
+    val testClient = setup()
+
+    repeat(2) {
+      testClient.post("/uploads") {
+        contentType(ContentType.Application.Json)
+
+        val fileName = "test_img.jpg"
+        val bytes = Files.readAllBytes(Path("src/test/resources/$fileName"))
+
+        setBody(
+          UploadRequestDTO(
+            title = "fake-title-$it",
+            description = "fake-description",
+            category = "fake-category",
+            name = fileName,
+            data = bytes
+          )
+        )
+      }
+    }
+
+    testClient.post("/uploads") {
+      contentType(ContentType.Application.Json)
+
+      val fileName = "test_img.jpg"
+      val bytes = Files.readAllBytes(Path("src/test/resources/$fileName"))
+
+      setBody(
+        UploadRequestDTO(
+          title = "title-to-be-used-in-url-term-query",
+          description = "fake-description",
+          category = "fake-category",
+          name = fileName,
+          data = bytes
+        )
+      )
+    }
+
+    val getResult = testClient.get("/images") {
+      parameter("term", "title-to-be-used-in-url-term-query")
+    }
+
+    val resultBody = getResult.body<List<ItemResponseDTO>>()
+    assertEquals(HttpStatusCode.OK, getResult.status)
+    assertTrue(resultBody.size == 1)
+  }
+
+  @Test
+  fun `test clear DELETE`() = testApplication {
+    val testClient = setup()
+
+    testClient.post("/uploads") {
+      contentType(ContentType.Application.Json)
+
+      val fileName = "test_img.jpg"
+      val bytes = Files.readAllBytes(Path("src/test/resources/$fileName"))
+
+      setBody(
+        UploadRequestDTO(
+          title = "fake-title",
+          description = "fake-description",
+          category = "fake-category",
+          name = fileName,
+          data = bytes
+        )
+      )
+    }
+
+    val deleteResult = testClient.delete("/clear")
+    val getResult = testClient.get("/images")
+    val resultBody = getResult.body<List<ItemResponseDTO>>()
+
+    assertEquals(HttpStatusCode.OK, deleteResult.status)
+    assertTrue(resultBody.isEmpty())
+  }
+}
+
+private fun ApplicationTestBuilder.setup(): HttpClient {
+  application {
+    configureCORS()
+    configureSerialization()
+    configureStatusPages()
+    configureLargePayloadRejector()
+    configureRouting()
+  }
+
+  return createClient {
+    install(ContentNegotiation) {
+      json(Json { isLenient = false })
+    }
   }
 }
 
