@@ -10,6 +10,7 @@ import com.lucasalfare.flrefs.main.cdn.github.GithubCdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.data.exposed.Users
 import com.lucasalfare.flrefs.main.plugins.LargePayloadRejector
 import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
@@ -59,8 +60,11 @@ fun initDatabase() {
     password = databasePasswordEnv,
     maximumPoolSize = databasePoolSizeEnv.toInt()
   ) {
-    SchemaUtils.createMissingTablesAndColumns(ImagesInfos)
-    SchemaUtils.createMissingTablesAndColumns(ImagesUrls)
+    SchemaUtils.createMissingTablesAndColumns(
+      Users,
+      ImagesInfos,
+      ImagesUrls
+    )
   }
 }
 

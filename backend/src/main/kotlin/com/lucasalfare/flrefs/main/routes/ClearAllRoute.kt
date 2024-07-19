@@ -3,6 +3,7 @@ package com.lucasalfare.flrefs.main.routes
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.data.exposed.Users
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -32,7 +33,11 @@ fun Routing.clearAllItemsRoute() {
           exec("DROP TABLE IF EXISTS $it$cascade")
         }
 
-        SchemaUtils.createMissingTablesAndColumns(ImagesInfos, ImagesUrls)
+        SchemaUtils.createMissingTablesAndColumns(
+          Users,
+          ImagesInfos,
+          ImagesUrls
+        )
       }
       // TODO: include call to CDN clear
       call.respond(HttpStatusCode.OK, "All tables were cleared.")

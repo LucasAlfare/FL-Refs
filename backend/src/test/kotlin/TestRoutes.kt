@@ -1,11 +1,11 @@
 import com.lucasalfare.flrefs.main.*
+import com.lucasalfare.flrefs.main.cdn.CdnUploadResult
 import com.lucasalfare.flrefs.main.cdn.CdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
 import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import com.lucasalfare.githubwrapper.main.GithubHelper
-import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
@@ -275,7 +275,7 @@ private fun createMockHttpClient(resultName: String): HttpClient {
 
 private object FakeCdnGithubUploader : CdnUploader {
 
-  override suspend fun upload(name: String, data: ByteArray, targetPath: String): GithubUploadResponseDTO {
+  override suspend fun upload(name: String, data: ByteArray, targetPath: String): CdnUploadResult {
     // Construct target path in the GitHub repository
     val targetPathInRepository = "uploads/$targetPath"
 
@@ -294,6 +294,6 @@ private object FakeCdnGithubUploader : CdnUploader {
     // Handle null result from upload
     uploadResult ?: throw UnavailableCdnService("Could not upload to CDN using ${this.javaClass.name}.")
 
-    return uploadResult
+    return CdnUploadResult(uploadResult.content.downloadUrl)
   }
 }
