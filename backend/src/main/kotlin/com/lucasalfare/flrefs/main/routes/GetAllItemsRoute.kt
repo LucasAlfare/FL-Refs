@@ -12,7 +12,7 @@ import io.ktor.server.routing.*
  *
  * This route handles GET requests to fetch images with optional filtering, pagination, and search term.
  */
-fun Routing.getAllItemsRoute() {
+fun Route.getAllItemsRoute() {
   get("/images") {
     val numItems = call.request.queryParameters["num_items"] ?: "0"
     val page = call.request.queryParameters["page"] ?: "0"

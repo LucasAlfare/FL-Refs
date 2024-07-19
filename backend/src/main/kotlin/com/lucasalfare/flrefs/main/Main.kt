@@ -14,12 +14,17 @@ import com.lucasalfare.flrefs.main.data.exposed.Users
 import com.lucasalfare.flrefs.main.plugins.LargePayloadRejector
 import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
+import com.lucasalfare.flrefs.main.routes.loginRoute
 import com.lucasalfare.flrefs.main.routes.uploadItemRoute
+import com.lucasalfare.flrefs.main.security.JwtProvider
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
@@ -27,6 +32,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
 
 /**
  * Variable representing the CDN uploader instance.
@@ -36,14 +42,25 @@ lateinit var cdnUploader: CdnUploader
 /**
  * Main function to start the application.
  */
-fun main() {
+suspend fun main() {
   // Initialize database connection and create tables if missing
   initDatabase()
+
+  // TEMP: hardcoded creation of a single User
+  runCatching {
+    AppDB.exposedQuery {
+      Users.insert {
+        it[email] = "my_beautiful_admin_email@system.com"
+        it[hashedPassword] = "beautiful_password_123".hashed()
+      }
+    }
+  }
 
   cdnUploader = GithubCdnUploader
 
   // Start embedded server
   embeddedServer(Netty, port = 80) {
+    configureAuthentication()
     configureCORS()
     configureSerialization()
     configureStatusPages()
@@ -68,18 +85,44 @@ fun initDatabase() {
   }
 }
 
-
 /**
  * Configures routing for the application.
  */
 internal fun Application.configureRouting() {
   routing {
+    loginRoute()
+    getAllItemsRoute()
+    authenticate("refs-auth-jw") {
+      uploadItemRoute()
+      clearAllItemsRoute()
+    }
+
     get("/hello") {
       call.respondText("Hello! We are healthy!! :)")
     }
-    uploadItemRoute()
-    getAllItemsRoute()
-    clearAllItemsRoute()
+  }
+}
+
+internal fun Application.configureAuthentication() {
+  val appRef = this
+  install(Authentication) {
+    jwt("refs-auth-jwt") {
+      realm = "" // TODO: <-- retrieve from env
+
+      verifier(JwtProvider.verifier)
+
+      validate { credential ->
+        if (credential.payload.getClaim("email").asString() != "") JWTPrincipal(credential.payload)
+        else null
+      }
+
+      challenge { _, _ ->
+        appRef.log.warn(
+          "Detected attempt of access a authenticate route with bad JWT Token from ${call.request.origin.remoteHost}"
+        )
+        call.respond(HttpStatusCode.Unauthorized, "Unable to access the system: Unauthorized!")
+      }
+    }
   }
 }
 

@@ -6,6 +6,7 @@ import com.lucasalfare.flrefs.main.data.exposed.service.DataServices.uploadImage
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -17,7 +18,7 @@ import io.ktor.server.routing.*
  * including creating image info, uploading to a CDN, generating a thumbnail,
  * and creating image URLs.
  */
-fun Routing.uploadItemRoute() {
+fun Route.uploadItemRoute() {
   post("/uploads") {
     call.receive<UploadRequestDTO>().let { req ->
       createImageUrls(

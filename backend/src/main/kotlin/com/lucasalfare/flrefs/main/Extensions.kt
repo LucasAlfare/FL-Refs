@@ -1,5 +1,6 @@
 package com.lucasalfare.flrefs.main
 
+import org.mindrot.jbcrypt.BCrypt
 import java.text.Normalizer
 
 /**
@@ -26,3 +27,11 @@ fun String.removeAccentuation() =
     regex = Regex("\\p{InCombiningDiacriticalMarks}+"),
     replacement = ""
   )
+
+// obtain the hashed version of the current String value
+fun String.hashed(): String =
+  BCrypt.hashpw(this, BCrypt.gensalt())
+
+// checks if the current String values matches a hashed String
+fun String.matchHashed(hashed: String) =
+  BCrypt.checkpw(this, hashed)

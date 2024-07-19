@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
 object Users : IntIdTable("Users") {
 
-  val email = text("email")
+  val email = text("email").uniqueIndex()
   val hashedPassword = text("hashed_password")
 }
 

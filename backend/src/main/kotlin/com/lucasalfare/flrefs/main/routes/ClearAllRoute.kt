@@ -19,8 +19,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
  *
  * TODO: This route should be placed inside an authentication block to restrict access.
  */
-fun Routing.clearAllItemsRoute() {
-  // TODO: this MUST be inside auth block!
+fun Route.clearAllItemsRoute() {
   delete("/clear") {
     return@delete AppDB.exposedQuery {
       transaction {
