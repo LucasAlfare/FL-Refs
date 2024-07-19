@@ -2,6 +2,7 @@ package com.lucasalfare.flrefs.main.cdn.github
 
 import com.lucasalfare.flrefs.main.EnvsLoader.loadEnv
 import com.lucasalfare.flrefs.main.UnavailableCdnService
+import com.lucasalfare.flrefs.main.cdn.CdnUploadResult
 import com.lucasalfare.flrefs.main.cdn.CdnUploader
 import com.lucasalfare.githubwrapper.main.GithubHelper
 import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
@@ -27,7 +28,7 @@ object GithubCdnUploader : CdnUploader {
    * @return An instance of [GithubUploadResponseDTO] containing information about the upload operation.
    * @throws UnavailableCdnService If the upload operation fails or the CDN service is unavailable.
    */
-  override suspend fun upload(name: String, data: ByteArray, targetPath: String): GithubUploadResponseDTO {
+  override suspend fun upload(name: String, data: ByteArray, targetPath: String): CdnUploadResult {
     // Construct target path in the GitHub repository
     val targetPathInRepository = "$ROOT_DIRECTORY/$targetPath"
 
@@ -44,6 +45,9 @@ object GithubCdnUploader : CdnUploader {
     // Handle null result from upload
     uploadResult ?: throw UnavailableCdnService("Could not upload to CDN using ${this.javaClass.name}.")
 
-    return uploadResult
+    return uploadResult.toCdnUploadResult()
   }
+
+  private fun GithubUploadResponseDTO.toCdnUploadResult() =
+    CdnUploadResult(downloadUrl = content.downloadUrl)
 }

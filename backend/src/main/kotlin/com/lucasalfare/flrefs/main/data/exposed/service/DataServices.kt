@@ -1,12 +1,12 @@
 package com.lucasalfare.flrefs.main.data.exposed.service
 
+import com.lucasalfare.flrefs.main.cdn.CdnUploadResult
 import com.lucasalfare.flrefs.main.cdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.crud.ImagesInfosCRUD
 import com.lucasalfare.flrefs.main.data.exposed.crud.ImagesUrlsCRUD
 import com.lucasalfare.flrefs.main.generateThumbnail
 import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
-import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
 
 object DataServices {
 
@@ -44,7 +44,7 @@ object DataServices {
       )
     }
 
-  suspend fun uploadImageToCdn(req: UploadRequestDTO, isThumbnail: Boolean = false): GithubUploadResponseDTO {
+  suspend fun uploadImageToCdn(req: UploadRequestDTO, isThumbnail: Boolean = false): CdnUploadResult {
     val nextNameAndBytes =
       when {
         isThumbnail -> Pair(

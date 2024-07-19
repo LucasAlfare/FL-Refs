@@ -22,8 +22,8 @@ fun Routing.uploadItemRoute() {
     call.receive<UploadRequestDTO>().let { req ->
       createImageUrls(
         createImageInfo(req),
-        uploadImageToCdn(req, false).content.downloadUrl,
-        uploadImageToCdn(req, true).content.downloadUrl
+        uploadImageToCdn(req, false).downloadUrl,
+        uploadImageToCdn(req, true).downloadUrl
       ).let {
         return@post call.respond(HttpStatusCode.Created, it)
       }
