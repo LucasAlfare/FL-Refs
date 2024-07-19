@@ -1,5 +1,5 @@
 import com.lucasalfare.flrefs.main.*
-import com.lucasalfare.flrefs.main.cdn.CdnUploaderAdapter
+import com.lucasalfare.flrefs.main.cdn.CdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
 import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
@@ -273,7 +273,7 @@ private fun createMockHttpClient(resultName: String): HttpClient {
   }
 }
 
-private object FakeCdnGithubUploader : CdnUploaderAdapter() {
+private object FakeCdnGithubUploader : CdnUploader {
 
   override suspend fun upload(name: String, data: ByteArray, targetPath: String): GithubUploadResponseDTO {
     // Construct target path in the GitHub repository
