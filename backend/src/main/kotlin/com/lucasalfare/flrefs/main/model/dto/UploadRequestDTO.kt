@@ -1,4 +1,4 @@
-package com.lucasalfare.flrefs.main.model
+package com.lucasalfare.flrefs.main.model.dto
 
 import com.lucasalfare.flrefs.main.ValidationError
 import com.lucasalfare.flrefs.main.removeAccentuation

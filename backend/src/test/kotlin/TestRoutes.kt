@@ -1,8 +1,9 @@
 import com.lucasalfare.flrefs.main.*
+import com.lucasalfare.flrefs.main.cdn.CdnUploaderAdapter
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
-import com.lucasalfare.flrefs.main.model.ItemResponseDTO
-import com.lucasalfare.flrefs.main.model.UploadRequestDTO
+import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
+import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import com.lucasalfare.githubwrapper.main.GithubHelper
 import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
 import io.ktor.client.*

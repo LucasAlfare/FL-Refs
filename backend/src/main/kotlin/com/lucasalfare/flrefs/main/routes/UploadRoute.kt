@@ -3,7 +3,7 @@ package com.lucasalfare.flrefs.main.routes
 import com.lucasalfare.flrefs.main.data.exposed.service.DataServices.createImageInfo
 import com.lucasalfare.flrefs.main.data.exposed.service.DataServices.createImageUrls
 import com.lucasalfare.flrefs.main.data.exposed.service.DataServices.uploadImageToCdn
-import com.lucasalfare.flrefs.main.model.UploadRequestDTO
+import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

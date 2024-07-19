@@ -1,4 +1,4 @@
-package com.lucasalfare.flrefs.main.model
+package com.lucasalfare.flrefs.main.model.dto
 
 import kotlinx.serialization.Serializable
 

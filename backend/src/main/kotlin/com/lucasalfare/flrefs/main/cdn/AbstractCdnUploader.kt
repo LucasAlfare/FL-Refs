@@ -1,4 +1,4 @@
-package com.lucasalfare.flrefs.main
+package com.lucasalfare.flrefs.main.cdn
 
 import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
 
@@ -19,21 +19,5 @@ interface CdnUploader {
     name: String,
     data: ByteArray,
     targetPath: String
-  ): GithubUploadResponseDTO
-}
-
-/**
- * Abstract class implementing [CdnUploader] interface with default unimplemented methods.
- * Typically used as a base for CDN uploader adapters.
- */
-abstract class CdnUploaderAdapter : CdnUploader {
-
-  /**
-   * Throws [UnavailableCdnService] indicating that CDN service is not implemented.
-   *
-   * @throws UnavailableCdnService Always throws this exception since the method is not implemented.
-   */
-  override suspend fun upload(name: String, data: ByteArray, targetPath: String): GithubUploadResponseDTO {
-    throw UnavailableCdnService("Not implemented")
-  }
+  ): GithubUploadResponseDTO // <-- should be super type, not specialized
 }

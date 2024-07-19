@@ -5,10 +5,11 @@ import com.lucasalfare.flrefs.main.EnvsLoader.databasePoolSizeEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.databaseUrlEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.databaseUsernameEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.driverClassNameEnv
+import com.lucasalfare.flrefs.main.cdn.CdnUploader
+import com.lucasalfare.flrefs.main.cdn.github.GithubCdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
-import com.lucasalfare.flrefs.main.github.GithubCdnUploader
 import com.lucasalfare.flrefs.main.plugins.LargePayloadRejector
 import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute

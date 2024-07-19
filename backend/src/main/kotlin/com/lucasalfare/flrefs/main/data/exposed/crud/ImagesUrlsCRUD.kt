@@ -3,15 +3,10 @@ package com.lucasalfare.flrefs.main.data.exposed.crud
 import com.lucasalfare.flrefs.main.UnavailableDatabaseRepository
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.model.ImageUrls
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
-data class ImageUrl(
-  val id: Int,
-  val relatedImageInfoTitle: String,
-  val originalUrl: String,
-  val thumbnailUrl: String
-)
 
 object ImagesUrlsCRUD {
 
@@ -26,7 +21,7 @@ object ImagesUrlsCRUD {
         it[ImagesUrls.originalUrl] = originalUrl
         it[ImagesUrls.thumbnailUrl] = thumbnailUrl
       }.singleOrNull()!!.let {
-        ImageUrl(
+        ImageUrls(
           id = it[ImagesUrls.id].value,
           relatedImageInfoTitle = it[ImagesUrls.relatedImageInfoTitle],
           originalUrl = it[ImagesUrls.originalUrl],
@@ -91,8 +86,8 @@ object ImagesUrlsCRUD {
     }
   }
 
-  private fun toImageUrl(row: ResultRow): ImageUrl =
-    ImageUrl(
+  private fun toImageUrl(row: ResultRow): ImageUrls =
+    ImageUrls(
       id = row[ImagesUrls.id].value,
       relatedImageInfoTitle = row[ImagesUrls.relatedImageInfoTitle],
       originalUrl = row[ImagesUrls.originalUrl],

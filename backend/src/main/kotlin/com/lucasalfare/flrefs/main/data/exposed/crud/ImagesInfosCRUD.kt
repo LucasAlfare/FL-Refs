@@ -3,23 +3,13 @@ package com.lucasalfare.flrefs.main.data.exposed.crud
 import com.lucasalfare.flrefs.main.UnavailableDatabaseRepository
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
-import kotlinx.datetime.LocalDateTime
+import com.lucasalfare.flrefs.main.model.ImageInfo
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 
 // Maximum number of items to be displayed per page
 private const val MAX_PAGE_ITEMS = 10
-
-data class ImageInfo(
-  val id: Int,
-  val createdAt: LocalDateTime,
-  val title: String,
-  val description: String,
-  val category: String,
-  val name: String,
-  val concatenation: String
-)
 
 object ImagesInfosCRUD {
 
