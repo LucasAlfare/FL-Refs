@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Upload Form</title>
 </head>
 <body>
 <h1>Upload Form</h1>
 <form id="uploadForm">
     <label for="title">Title:</label><br>
-    <input type="text" id="title" name="title"><br>
+    <input id="title" name="title" type="text"><br>
     <label for="description">Description:</label><br>
     <textarea id="description" name="description"></textarea><br>
     <label for="relatedFranchiseName">Related Franchise Name:</label><br>
-    <input type="text" id="relatedFranchiseName" name="relatedFranchiseName"><br>
+    <input id="relatedFranchiseName" name="relatedFranchiseName" type="text"><br>
     <label for="rawReferenceData">Raw Reference Data:</label><br>
-    <input type="file" id="rawReferenceData" name="rawReferenceData"><br><br>
-    <button type="button" onclick="submitForm()">Submit</button>
+    <input id="rawReferenceData" name="rawReferenceData" type="file"><br><br>
+    <button onclick="submitForm()" type="button">Submit</button>
 </form>
 
 <script>
