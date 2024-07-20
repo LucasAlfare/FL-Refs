@@ -5,6 +5,7 @@ import com.lucasalfare.flrefs.main.EnvsLoader.databasePoolSizeEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.databaseUrlEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.databaseUsernameEnv
 import com.lucasalfare.flrefs.main.EnvsLoader.driverClassNameEnv
+import com.lucasalfare.flrefs.main.EnvsLoader.loadEnv
 import com.lucasalfare.flrefs.main.cdn.CdnUploader
 import com.lucasalfare.flrefs.main.cdn.github.GithubCdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
@@ -67,7 +68,10 @@ internal fun startServer() {
 internal suspend fun initOther() {
   runCatching {
     // TODO: get true email and password from ENV
-    UsersCRUD.create("", "")
+    UsersCRUD.create(
+      email = loadEnv("ADMIN_EMAIL"),
+      plainPassword = loadEnv("ADMIN_PLAIN_PASSWORD")
+    )
   }
 
   cdnUploader = GithubCdnUploader
