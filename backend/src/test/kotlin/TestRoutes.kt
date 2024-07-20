@@ -3,6 +3,7 @@ import com.lucasalfare.flrefs.main.cdn.CdnUploadResult
 import com.lucasalfare.flrefs.main.cdn.CdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.data.exposed.crud.UsersCRUD
 import com.lucasalfare.flrefs.main.localization.Message
 import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
 import com.lucasalfare.flrefs.main.model.dto.LoginRequestDTO
@@ -27,10 +28,16 @@ import kotlin.test.*
 
 class TestRoutes {
 
+  private val testingEmail = "my_beautiful_admin_email@system.com"
+  private val testingPlainPassword = "beautiful_password_123"
+
   @BeforeTest
   fun setupDb() {
     initDatabase()
-    runBlocking { configureOther() }
+    runBlocking {
+      initOther()
+      runCatching { UsersCRUD.create(testingEmail, testingPlainPassword) }
+    }
     cdnUploader = FakeCdnGithubUploader
   }
 
@@ -44,14 +51,14 @@ class TestRoutes {
 
   @Test
   fun `test login GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
 
     val loginResult = testClient.get("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
-          email = "my_beautiful_admin_email@system.com",
-          plainPassword = "beautiful_password_123"
+          email = testingEmail,
+          plainPassword = testingPlainPassword
         )
       )
     }
@@ -61,14 +68,14 @@ class TestRoutes {
 
   @Test
   fun `test upload POST`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
 
     val loginResult = testClient.get("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
-          email = "my_beautiful_admin_email@system.com",
-          plainPassword = "beautiful_password_123"
+          email = testingEmail,
+          plainPassword = testingPlainPassword
         )
       )
     }
@@ -101,14 +108,14 @@ class TestRoutes {
 
   @Test
   fun `test general get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
 
     val loginResult = testClient.get("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
-          email = "my_beautiful_admin_email@system.com",
-          plainPassword = "beautiful_password_123"
+          email = testingEmail,
+          plainPassword = testingPlainPassword
         )
       )
     }
@@ -143,14 +150,14 @@ class TestRoutes {
 
   @Test
   fun `test num_items get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
 
     val loginResult = testClient.get("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
-          email = "my_beautiful_admin_email@system.com",
-          plainPassword = "beautiful_password_123"
+          email = testingEmail,
+          plainPassword = testingPlainPassword
         )
       )
     }
@@ -190,14 +197,14 @@ class TestRoutes {
 
   @Test
   fun `test offset get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
 
     val loginResult = testClient.get("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
-          email = "my_beautiful_admin_email@system.com",
-          plainPassword = "beautiful_password_123"
+          email = testingEmail,
+          plainPassword = testingPlainPassword
         )
       )
     }
@@ -238,14 +245,14 @@ class TestRoutes {
 
   @Test
   fun `test term get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
 
     val loginResult = testClient.get("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
-          email = "my_beautiful_admin_email@system.com",
-          plainPassword = "beautiful_password_123"
+          email = testingEmail,
+          plainPassword = testingPlainPassword
         )
       )
     }
@@ -306,14 +313,14 @@ class TestRoutes {
 
   @Test
   fun `test clear DELETE`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
 
     val loginResult = testClient.get("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
-          email = "my_beautiful_admin_email@system.com",
-          plainPassword = "beautiful_password_123"
+          email = testingEmail,
+          plainPassword = testingPlainPassword
         )
       )
     }
@@ -353,7 +360,7 @@ class TestRoutes {
   }
 }
 
-private fun ApplicationTestBuilder.setup(): HttpClient {
+private fun ApplicationTestBuilder.setupTestClient(): HttpClient {
   application {
     configureAuthentication()
     configureCORS()

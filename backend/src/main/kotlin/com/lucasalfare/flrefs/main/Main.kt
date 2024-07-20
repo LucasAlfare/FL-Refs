@@ -11,6 +11,7 @@ import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
 import com.lucasalfare.flrefs.main.data.exposed.Users
+import com.lucasalfare.flrefs.main.data.exposed.crud.UsersCRUD
 import com.lucasalfare.flrefs.main.plugins.LargePayloadRejector
 import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
@@ -32,7 +33,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insert
 import java.util.*
 
 /**
@@ -46,7 +46,9 @@ lateinit var currentLocale: Locale
  * Main function to start the application.
  */
 suspend fun main() {
-  configureOther()
+  // Initialize database connection and create tables if missing
+  initDatabase()
+  initOther()
   startServer()
 }
 
@@ -62,18 +64,10 @@ internal fun startServer() {
   }.start(wait = true)
 }
 
-internal suspend fun configureOther() {
-  // Initialize database connection and create tables if missing
-  initDatabase()
-
-  // TEMP: hardcoded creation of a single User
+internal suspend fun initOther() {
   runCatching {
-    AppDB.exposedQuery {
-      Users.insert {
-        it[email] = "my_beautiful_admin_email@system.com"
-        it[hashedPassword] = "beautiful_password_123".hashed()
-      }
-    }
+    // TODO: get true email and password from ENV
+    UsersCRUD.create("", "")
   }
 
   cdnUploader = GithubCdnUploader
