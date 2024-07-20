@@ -23,9 +23,7 @@ object JwtProvider {
     targetClaim: String // login/email
   ): String =
     JWT.create()
-//      .withAudience(environment.config.property("jwt.audience").getString())
-//      .withIssuer(environment.config.property("jwt.issuer").getString())
-//      .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+      .withExpiresAt(Date(System.currentTimeMillis() + (60000 * 10)))
       .withClaim("email", targetClaim)
       .sign(Algorithm.HMAC256(jwtAlgorithmSignSecret))
 }
