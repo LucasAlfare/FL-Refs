@@ -46,6 +46,23 @@ lateinit var currentLocale: Locale
  * Main function to start the application.
  */
 suspend fun main() {
+  configureOther()
+  startServer()
+}
+
+internal fun startServer() {
+  // Start embedded server
+  embeddedServer(Netty, port = 80) {
+    configureAuthentication()
+    configureCORS()
+    configureSerialization()
+    configureStatusPages()
+    configureLargePayloadRejector()
+    configureRouting()
+  }.start(wait = true)
+}
+
+internal suspend fun configureOther() {
   // Initialize database connection and create tables if missing
   initDatabase()
 
@@ -61,16 +78,6 @@ suspend fun main() {
 
   cdnUploader = GithubCdnUploader
   currentLocale = Locale.ENGLISH
-
-  // Start embedded server
-  embeddedServer(Netty, port = 80) {
-    configureAuthentication()
-    configureCORS()
-    configureSerialization()
-    configureStatusPages()
-    configureLargePayloadRejector()
-    configureRouting()
-  }.start(wait = true)
 }
 
 fun initDatabase() {
@@ -96,7 +103,7 @@ internal fun Application.configureRouting() {
   routing {
     loginRoute()
     getAllItemsRoute()
-    authenticate("refs-auth-jw") {
+    authenticate("refs-auth-jwt") {
       uploadItemRoute()
       clearAllItemsRoute()
     }
