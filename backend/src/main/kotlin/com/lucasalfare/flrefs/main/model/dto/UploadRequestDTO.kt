@@ -12,7 +12,7 @@ import kotlinx.serialization.Transient
  * @property title The title of the upload request.
  * @property description The description of the upload request.
  * @property category The category of the upload request.
- * @property name The name associated with the upload request.
+ * @property name The name of the file.
  * @property data The byte array data to be uploaded.
  * @throws ValidationError If any of the required fields are blank or if the data format is not supported.
  */

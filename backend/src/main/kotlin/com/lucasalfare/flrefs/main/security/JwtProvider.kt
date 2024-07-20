@@ -23,7 +23,7 @@ object JwtProvider {
     targetClaim: String // login/email
   ): String =
     JWT.create()
-      .withExpiresAt(Date(System.currentTimeMillis() + (60000 * 10)))
+//      .withExpiresAt(Date(System.currentTimeMillis() + (60000 * 10)))
       .withClaim("email", targetClaim)
       .sign(Algorithm.HMAC256(jwtAlgorithmSignSecret))
 }

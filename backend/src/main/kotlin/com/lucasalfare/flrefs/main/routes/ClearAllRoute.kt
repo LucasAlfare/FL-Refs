@@ -30,11 +30,12 @@ fun Route.clearAllItemsRoute() {
           else ""
 
         SchemaUtils.listTables().forEach {
-          exec("DROP TABLE IF EXISTS $it$cascade")
+          if (it != Users.tableName) {
+            exec("DROP TABLE IF EXISTS $it$cascade")
+          }
         }
 
         SchemaUtils.createMissingTablesAndColumns(
-          Users,
           ImagesInfos,
           ImagesUrls
         )

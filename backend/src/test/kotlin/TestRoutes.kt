@@ -53,7 +53,7 @@ class TestRoutes {
   fun `test login GET`() = testApplication {
     val testClient = setupTestClient()
 
-    val loginResult = testClient.get("/login") {
+    val loginResult = testClient.post("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
@@ -70,7 +70,7 @@ class TestRoutes {
   fun `test upload POST`() = testApplication {
     val testClient = setupTestClient()
 
-    val loginResult = testClient.get("/login") {
+    val loginResult = testClient.post("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
@@ -110,7 +110,7 @@ class TestRoutes {
   fun `test general get GET`() = testApplication {
     val testClient = setupTestClient()
 
-    val loginResult = testClient.get("/login") {
+    val loginResult = testClient.post("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
@@ -152,7 +152,7 @@ class TestRoutes {
   fun `test num_items get GET`() = testApplication {
     val testClient = setupTestClient()
 
-    val loginResult = testClient.get("/login") {
+    val loginResult = testClient.post("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
@@ -199,7 +199,7 @@ class TestRoutes {
   fun `test offset get GET`() = testApplication {
     val testClient = setupTestClient()
 
-    val loginResult = testClient.get("/login") {
+    val loginResult = testClient.post("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
@@ -247,7 +247,7 @@ class TestRoutes {
   fun `test term get GET`() = testApplication {
     val testClient = setupTestClient()
 
-    val loginResult = testClient.get("/login") {
+    val loginResult = testClient.post("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(
@@ -315,7 +315,7 @@ class TestRoutes {
   fun `test clear DELETE`() = testApplication {
     val testClient = setupTestClient()
 
-    val loginResult = testClient.get("/login") {
+    val loginResult = testClient.post("/login") {
       contentType(ContentType.Application.Json)
       setBody(
         LoginRequestDTO(

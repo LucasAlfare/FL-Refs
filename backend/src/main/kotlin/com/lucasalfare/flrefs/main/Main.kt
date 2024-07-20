@@ -146,6 +146,9 @@ internal fun Application.configureCORS() {
   install(CORS) {
     anyHost()
     allowHeader(HttpHeaders.ContentType)
+    allowHeader(HttpHeaders.Authorization)
+    allowMethod(HttpMethod.Post)
+    allowMethod(HttpMethod.Get)
     allowMethod(HttpMethod.Delete)
     allowMethod(HttpMethod.Put)
   }
@@ -156,7 +159,7 @@ internal fun Application.configureCORS() {
  */
 internal fun Application.configureSerialization() {
   install(ContentNegotiation) {
-    json(Json { isLenient = false })
+    json(Json { isLenient = false; ignoreUnknownKeys = true })
   }
 }
 
