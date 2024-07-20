@@ -12,14 +12,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.loginRoute() {
-  get("/login") {
+  post("/login") {
     val request = call.receive<LoginRequestDTO>()
 
     UsersCRUD.readByEmail(request.email)?.let {
       if (!request.plainPassword.matchHashed(it.hashedPassword))
-        return@get call.respond(HttpStatusCode.Unauthorized, Message.AUTHENTICATION_ERROR.toString())
-      return@get call.respond(HttpStatusCode.OK, JwtProvider.generateJWT(it.email))
+        return@post call.respond(HttpStatusCode.Unauthorized, Message.AUTHENTICATION_ERROR.toString())
+      return@post call.respond(HttpStatusCode.OK, JwtProvider.generateJWT(it.email))
     }
-    return@get call.respond(HttpStatusCode.Unauthorized, Message.AUTHENTICATION_ERROR.toString())
+    return@post call.respond(HttpStatusCode.Unauthorized, Message.AUTHENTICATION_ERROR.toString())
   }
 }
