@@ -111,7 +111,7 @@ internal fun Application.configureAuthentication() {
   val appRef = this
   install(Authentication) {
     jwt("refs-auth-jwt") {
-      realm = "" // TODO: <-- retrieve from env
+      realm = EnvsLoader.loadEnv("JWT_AUTH_REALM")
 
       verifier(JwtProvider.verifier)
 

@@ -3,6 +3,7 @@ import com.lucasalfare.flrefs.main.cdn.CdnUploadResult
 import com.lucasalfare.flrefs.main.cdn.CdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.localization.Message
 import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import com.lucasalfare.githubwrapper.main.GithubHelper
@@ -41,6 +42,9 @@ class TestRoutes {
   @Test
   fun `test upload POST`() = testApplication {
     val testClient = setup()
+
+    // do login and retrieve jwt here
+
     val uploadResult = testClient.post("/uploads") {
       contentType(ContentType.Application.Json)
 
@@ -206,6 +210,8 @@ class TestRoutes {
   fun `test clear DELETE`() = testApplication {
     val testClient = setup()
 
+    // do login and retrieve jwt here
+
     testClient.post("/uploads") {
       contentType(ContentType.Application.Json)
 
@@ -292,7 +298,9 @@ private object FakeCdnGithubUploader : CdnUploader {
     )
 
     // Handle null result from upload
-    uploadResult ?: throw UnavailableCdnService("Could not upload to CDN using ${this.javaClass.name}.")
+    uploadResult ?: throw UnavailableCdnService(
+      Message.CDN_UPLOAD_ERROR.format(this.javaClass.name)
+    )
 
     return CdnUploadResult(uploadResult.content.downloadUrl)
   }
