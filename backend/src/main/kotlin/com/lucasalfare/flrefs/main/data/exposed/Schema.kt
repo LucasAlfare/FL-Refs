@@ -4,6 +4,12 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
+object Users : IntIdTable("Users") {
+
+  val email = text("email").uniqueIndex()
+  val hashedPassword = text("hashed_password")
+}
+
 /**
  * Table object representing the "ImagesInfos" table in the database.
  */

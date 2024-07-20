@@ -1,6 +1,7 @@
 package com.lucasalfare.flrefs.main.model.dto
 
 import com.lucasalfare.flrefs.main.ValidationError
+import com.lucasalfare.flrefs.main.localization.Message
 import com.lucasalfare.flrefs.main.removeAccentuation
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -29,14 +30,14 @@ data class UploadRequestDTO(
   lateinit var concatenation: String
 
   init {
-    if (title.isBlank()) throw ValidationError("Title cannot be blank")
-    if (description.isBlank()) throw ValidationError("Description cannot be blank")
-    if (category.isBlank()) throw ValidationError("Category cannot be blank")
-    if (name.isBlank()) throw ValidationError("Name cannot be blank")
-    if (data.isEmpty()) throw ValidationError("Data cannot be empty")
+    if (title.isBlank()) throw ValidationError(Message.UPLOAD_TITLE_EMPTY_ERROR.toString())
+    if (description.isBlank()) throw ValidationError(Message.UPLOAD_DESCRIPTION_EMPTY_ERROR.toString())
+    if (category.isBlank()) throw ValidationError(Message.UPLOAD_CATEGORY_EMPTY_ERROR.toString())
+    if (name.isBlank()) throw ValidationError(Message.UPLOAD_NAME_EMPTY_ERROR.toString())
+    if (data.isEmpty()) throw ValidationError(Message.UPLOAD_DATA_EMPTY_ERROR.toString())
     if (name.split(".").last().lowercase().contains("webp"))
-      throw ValidationError("WEBP format is not supported yet.")
-    if (data.size > 10_000 * 1000) throw ValidationError("Data is too large (> 10_000 * 1000 bytes)")
+      throw ValidationError(Message.UNSUPPORTED_UPLOAD_EXTENSION_ERROR.toString())
+    if (data.size > 10_000 * 1000) throw ValidationError(Message.LARGE_PAYLOAD_ERROR.toString())
 
     concatenation = "$title$description$category"
 

@@ -3,6 +3,8 @@ package com.lucasalfare.flrefs.main.routes
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.data.exposed.Users
+import com.lucasalfare.flrefs.main.localization.Message
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -18,8 +20,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
  *
  * TODO: This route should be placed inside an authentication block to restrict access.
  */
-fun Routing.clearAllItemsRoute() {
-  // TODO: this MUST be inside auth block!
+fun Route.clearAllItemsRoute() {
   delete("/clear") {
     return@delete AppDB.exposedQuery {
       transaction {
@@ -32,10 +33,14 @@ fun Routing.clearAllItemsRoute() {
           exec("DROP TABLE IF EXISTS $it$cascade")
         }
 
-        SchemaUtils.createMissingTablesAndColumns(ImagesInfos, ImagesUrls)
+        SchemaUtils.createMissingTablesAndColumns(
+          Users,
+          ImagesInfos,
+          ImagesUrls
+        )
       }
       // TODO: include call to CDN clear
-      call.respond(HttpStatusCode.OK, "All tables were cleared.")
+      call.respond(HttpStatusCode.OK, Message.DB_CLEAR_SUCCESS.toString())
     }
   }
 }

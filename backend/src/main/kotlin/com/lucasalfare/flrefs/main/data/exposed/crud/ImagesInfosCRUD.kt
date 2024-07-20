@@ -3,6 +3,7 @@ package com.lucasalfare.flrefs.main.data.exposed.crud
 import com.lucasalfare.flrefs.main.UnavailableDatabaseRepository
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
+import com.lucasalfare.flrefs.main.localization.Message
 import com.lucasalfare.flrefs.main.model.ImageInfo
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -39,7 +40,7 @@ object ImagesInfosCRUD {
         )
       }
     } catch (e: Exception) {
-      throw UnavailableDatabaseRepository("Can not to insert Image Info data")
+      throw UnavailableDatabaseRepository(Message.IMAGE_INSERTION_ERROR.toString())
     }
   }
 
@@ -50,7 +51,7 @@ object ImagesInfosCRUD {
         .mapNotNull { toImageInfo(it) }
         .singleOrNull()
     } catch (e: Exception) {
-      throw UnavailableDatabaseRepository("Can not to get/select the Image Info from database.")
+      throw UnavailableDatabaseRepository(Message.IMAGE_SELECTION_ERROR.toString())
     }
   }
 

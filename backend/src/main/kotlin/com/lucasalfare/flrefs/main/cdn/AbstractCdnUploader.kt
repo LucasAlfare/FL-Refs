@@ -2,6 +2,10 @@ package com.lucasalfare.flrefs.main.cdn
 
 import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
 
+data class CdnUploadResult(
+  val downloadUrl: String
+)
+
 /**
  * Interface defining operations for uploading files to a Content Delivery Network (CDN).
  */
@@ -15,9 +19,14 @@ interface CdnUploader {
    * @param targetPath The target path on the CDN where the file should be uploaded.
    * @return An instance of [GithubUploadResponseDTO] containing information about the upload operation.
    */
+//  suspend fun upload(
+//    name: String,
+//    data: ByteArray,
+//    targetPath: String
+//  ): GithubUploadResponseDTO
   suspend fun upload(
     name: String,
     data: ByteArray,
     targetPath: String
-  ): GithubUploadResponseDTO // <-- should be super type, not specialized
+  ): CdnUploadResult
 }

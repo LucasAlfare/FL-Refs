@@ -3,6 +3,7 @@ package com.lucasalfare.flrefs.main.data.exposed.crud
 import com.lucasalfare.flrefs.main.UnavailableDatabaseRepository
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.localization.Message
 import com.lucasalfare.flrefs.main.model.ImageUrls
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -29,7 +30,7 @@ object ImagesUrlsCRUD {
         )
       }
     } catch (e: Exception) {
-      throw UnavailableDatabaseRepository("Could not to insert image URLs in the database.")
+      throw UnavailableDatabaseRepository(Message.IMAGE_URL_INSERTION_ERROR.toString())
     }
   }
 
@@ -40,7 +41,7 @@ object ImagesUrlsCRUD {
         .single()
     } catch (e: Exception) {
       throw UnavailableDatabaseRepository(
-        "Could not to retrieve URLs from the requested related image info title"
+        Message.IMAGE_URL_SELECTION_ERROR.toString()
       )
     }
   }

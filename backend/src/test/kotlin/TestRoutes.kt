@@ -1,11 +1,14 @@
 import com.lucasalfare.flrefs.main.*
+import com.lucasalfare.flrefs.main.cdn.CdnUploadResult
 import com.lucasalfare.flrefs.main.cdn.CdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.data.exposed.crud.UsersCRUD
+import com.lucasalfare.flrefs.main.localization.Message
 import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
+import com.lucasalfare.flrefs.main.model.dto.LoginRequestDTO
 import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
 import com.lucasalfare.githubwrapper.main.GithubHelper
-import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
@@ -14,6 +17,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -24,9 +28,16 @@ import kotlin.test.*
 
 class TestRoutes {
 
+  private val testingEmail = "my_beautiful_admin_email@system.com"
+  private val testingPlainPassword = "beautiful_password_123"
+
   @BeforeTest
   fun setupDb() {
     initDatabase()
+    runBlocking {
+      initOther()
+      runCatching { UsersCRUD.create(testingEmail, testingPlainPassword) }
+    }
     cdnUploader = FakeCdnGithubUploader
   }
 
@@ -39,9 +50,42 @@ class TestRoutes {
   }
 
   @Test
+  fun `test login GET`() = testApplication {
+    val testClient = setupTestClient()
+
+    val loginResult = testClient.get("/login") {
+      contentType(ContentType.Application.Json)
+      setBody(
+        LoginRequestDTO(
+          email = testingEmail,
+          plainPassword = testingPlainPassword
+        )
+      )
+    }
+
+    assertEquals(HttpStatusCode.OK, loginResult.status)
+  }
+
+  @Test
   fun `test upload POST`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
+
+    val loginResult = testClient.get("/login") {
+      contentType(ContentType.Application.Json)
+      setBody(
+        LoginRequestDTO(
+          email = testingEmail,
+          plainPassword = testingPlainPassword
+        )
+      )
+    }
+    val token = loginResult.body<String>()
+
     val uploadResult = testClient.post("/uploads") {
+      headers {
+        append(HttpHeaders.Authorization, "Bearer $token")
+      }
+
       contentType(ContentType.Application.Json)
 
       val fileName = "test_img.jpg"
@@ -57,15 +101,31 @@ class TestRoutes {
         )
       )
     }
+
     assertEquals(HttpStatusCode.Created, uploadResult.status)
     assertTrue(uploadResult.body<Int>() > 0)
   }
 
   @Test
   fun `test general get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
+
+    val loginResult = testClient.get("/login") {
+      contentType(ContentType.Application.Json)
+      setBody(
+        LoginRequestDTO(
+          email = testingEmail,
+          plainPassword = testingPlainPassword
+        )
+      )
+    }
+    val token = loginResult.body<String>()
 
     testClient.post("/uploads") {
+      headers {
+        append(HttpHeaders.Authorization, "Bearer $token")
+      }
+
       contentType(ContentType.Application.Json)
 
       val fileName = "test_img.jpg"
@@ -90,10 +150,25 @@ class TestRoutes {
 
   @Test
   fun `test num_items get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
+
+    val loginResult = testClient.get("/login") {
+      contentType(ContentType.Application.Json)
+      setBody(
+        LoginRequestDTO(
+          email = testingEmail,
+          plainPassword = testingPlainPassword
+        )
+      )
+    }
+    val token = loginResult.body<String>()
 
     repeat(10) {
       testClient.post("/uploads") {
+        headers {
+          append(HttpHeaders.Authorization, "Bearer $token")
+        }
+
         contentType(ContentType.Application.Json)
 
         val fileName = "test_img.jpg"
@@ -122,10 +197,25 @@ class TestRoutes {
 
   @Test
   fun `test offset get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
+
+    val loginResult = testClient.get("/login") {
+      contentType(ContentType.Application.Json)
+      setBody(
+        LoginRequestDTO(
+          email = testingEmail,
+          plainPassword = testingPlainPassword
+        )
+      )
+    }
+    val token = loginResult.body<String>()
 
     repeat(10) {
       testClient.post("/uploads") {
+        headers {
+          append(HttpHeaders.Authorization, "Bearer $token")
+        }
+
         contentType(ContentType.Application.Json)
 
         val fileName = "test_img.jpg"
@@ -155,10 +245,25 @@ class TestRoutes {
 
   @Test
   fun `test term get GET`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
+
+    val loginResult = testClient.get("/login") {
+      contentType(ContentType.Application.Json)
+      setBody(
+        LoginRequestDTO(
+          email = testingEmail,
+          plainPassword = testingPlainPassword
+        )
+      )
+    }
+    val token = loginResult.body<String>()
 
     repeat(2) {
       testClient.post("/uploads") {
+        headers {
+          append(HttpHeaders.Authorization, "Bearer $token")
+        }
+
         contentType(ContentType.Application.Json)
 
         val fileName = "test_img.jpg"
@@ -177,6 +282,10 @@ class TestRoutes {
     }
 
     testClient.post("/uploads") {
+      headers {
+        append(HttpHeaders.Authorization, "Bearer $token")
+      }
+
       contentType(ContentType.Application.Json)
 
       val fileName = "test_img.jpg"
@@ -204,9 +313,24 @@ class TestRoutes {
 
   @Test
   fun `test clear DELETE`() = testApplication {
-    val testClient = setup()
+    val testClient = setupTestClient()
+
+    val loginResult = testClient.get("/login") {
+      contentType(ContentType.Application.Json)
+      setBody(
+        LoginRequestDTO(
+          email = testingEmail,
+          plainPassword = testingPlainPassword
+        )
+      )
+    }
+    val token = loginResult.body<String>()
 
     testClient.post("/uploads") {
+      headers {
+        append(HttpHeaders.Authorization, "Bearer $token")
+      }
+
       contentType(ContentType.Application.Json)
 
       val fileName = "test_img.jpg"
@@ -223,7 +347,11 @@ class TestRoutes {
       )
     }
 
-    val deleteResult = testClient.delete("/clear")
+    val deleteResult = testClient.delete("/clear") {
+      headers {
+        append(HttpHeaders.Authorization, "Bearer $token")
+      }
+    }
     val getResult = testClient.get("/images")
     val resultBody = getResult.body<List<ItemResponseDTO>>()
 
@@ -232,8 +360,9 @@ class TestRoutes {
   }
 }
 
-private fun ApplicationTestBuilder.setup(): HttpClient {
+private fun ApplicationTestBuilder.setupTestClient(): HttpClient {
   application {
+    configureAuthentication()
     configureCORS()
     configureSerialization()
     configureStatusPages()
@@ -275,7 +404,7 @@ private fun createMockHttpClient(resultName: String): HttpClient {
 
 private object FakeCdnGithubUploader : CdnUploader {
 
-  override suspend fun upload(name: String, data: ByteArray, targetPath: String): GithubUploadResponseDTO {
+  override suspend fun upload(name: String, data: ByteArray, targetPath: String): CdnUploadResult {
     // Construct target path in the GitHub repository
     val targetPathInRepository = "uploads/$targetPath"
 
@@ -292,8 +421,10 @@ private object FakeCdnGithubUploader : CdnUploader {
     )
 
     // Handle null result from upload
-    uploadResult ?: throw UnavailableCdnService("Could not upload to CDN using ${this.javaClass.name}.")
+    uploadResult ?: throw UnavailableCdnService(
+      Message.CDN_UPLOAD_ERROR.format(this.javaClass.name)
+    )
 
-    return uploadResult
+    return CdnUploadResult(uploadResult.content.downloadUrl)
   }
 }

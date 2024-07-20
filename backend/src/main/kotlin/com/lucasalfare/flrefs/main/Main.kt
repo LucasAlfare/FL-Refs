@@ -10,15 +10,22 @@ import com.lucasalfare.flrefs.main.cdn.github.GithubCdnUploader
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.data.exposed.Users
+import com.lucasalfare.flrefs.main.data.exposed.crud.UsersCRUD
 import com.lucasalfare.flrefs.main.plugins.LargePayloadRejector
 import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
+import com.lucasalfare.flrefs.main.routes.loginRoute
 import com.lucasalfare.flrefs.main.routes.uploadItemRoute
+import com.lucasalfare.flrefs.main.security.JwtProvider
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
@@ -26,29 +33,45 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
+import java.util.*
 
 /**
  * Variable representing the CDN uploader instance.
  */
 lateinit var cdnUploader: CdnUploader
 
+lateinit var currentLocale: Locale
+
 /**
  * Main function to start the application.
  */
-fun main() {
+suspend fun main() {
   // Initialize database connection and create tables if missing
   initDatabase()
+  initOther()
+  startServer()
+}
 
-  cdnUploader = GithubCdnUploader
-
+internal fun startServer() {
   // Start embedded server
   embeddedServer(Netty, port = 80) {
+    configureAuthentication()
     configureCORS()
     configureSerialization()
     configureStatusPages()
     configureLargePayloadRejector()
     configureRouting()
   }.start(wait = true)
+}
+
+internal suspend fun initOther() {
+  runCatching {
+    // TODO: get true email and password from ENV
+    UsersCRUD.create("", "")
+  }
+
+  cdnUploader = GithubCdnUploader
+  currentLocale = Locale.ENGLISH
 }
 
 fun initDatabase() {
@@ -59,23 +82,52 @@ fun initDatabase() {
     password = databasePasswordEnv,
     maximumPoolSize = databasePoolSizeEnv.toInt()
   ) {
-    SchemaUtils.createMissingTablesAndColumns(ImagesInfos)
-    SchemaUtils.createMissingTablesAndColumns(ImagesUrls)
+    SchemaUtils.createMissingTablesAndColumns(
+      Users,
+      ImagesInfos,
+      ImagesUrls
+    )
   }
 }
-
 
 /**
  * Configures routing for the application.
  */
 internal fun Application.configureRouting() {
   routing {
+    loginRoute()
+    getAllItemsRoute()
+    authenticate("refs-auth-jwt") {
+      uploadItemRoute()
+      clearAllItemsRoute()
+    }
+
     get("/hello") {
       call.respondText("Hello! We are healthy!! :)")
     }
-    uploadItemRoute()
-    getAllItemsRoute()
-    clearAllItemsRoute()
+  }
+}
+
+internal fun Application.configureAuthentication() {
+  val appRef = this
+  install(Authentication) {
+    jwt("refs-auth-jwt") {
+      realm = EnvsLoader.loadEnv("JWT_AUTH_REALM")
+
+      verifier(JwtProvider.verifier)
+
+      validate { credential ->
+        if (credential.payload.getClaim("email").asString() != "") JWTPrincipal(credential.payload)
+        else null
+      }
+
+      challenge { _, _ ->
+        appRef.log.warn(
+          "Detected attempt of access a authenticate route with bad JWT Token from ${call.request.origin.remoteHost}"
+        )
+        call.respond(HttpStatusCode.Unauthorized, "Unable to access the system: Unauthorized!")
+      }
+    }
   }
 }
 
