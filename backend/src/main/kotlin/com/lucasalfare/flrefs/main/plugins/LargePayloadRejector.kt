@@ -1,5 +1,6 @@
 package com.lucasalfare.flrefs.main.plugins
 
+import com.lucasalfare.flrefs.main.localization.Message
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -41,7 +42,7 @@ class LargePayloadRejector {
         if (contentLength != null && contentLength > 10_000 * 1000) {
           call.respond(
             HttpStatusCode.PayloadTooLarge,
-            "File is too large. Maximum allowed size is 10_000 * 1000 bytes."
+            Message.LARGE_PAYLOAD_ERROR.toString()
           )
           finish()
         }

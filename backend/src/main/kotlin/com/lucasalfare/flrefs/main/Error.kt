@@ -1,6 +1,7 @@
 package com.lucasalfare.flrefs.main
 
 
+import com.lucasalfare.flrefs.main.localization.Message
 import io.ktor.http.*
 
 /**
@@ -23,7 +24,7 @@ open class AppError(
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
  */
 class UnavailableDatabaseRepository(
-  customMessage: String = "Error performing database operation.",
+  customMessage: String = Message.GENERAL_DATABASE_ERROR.toString(),
   status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : AppError(customMessage, status)
 
@@ -34,7 +35,7 @@ class UnavailableDatabaseRepository(
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.BadRequest`.
  */
 class BadRequest(
-  customMessage: String = "Error in the requested payload.",
+  customMessage: String = Message.GENERAL_BAD_REQUEST.toString(),
   status: HttpStatusCode = HttpStatusCode.BadRequest
 ) : AppError(customMessage, status)
 
@@ -45,7 +46,7 @@ class BadRequest(
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.BadRequest`.
  */
 class SerializationError(
-  customMessage: String = "Error in serialization process.",
+  customMessage: String = Message.GENERAL_SERIALIZATION_ERROR.toString(),
   status: HttpStatusCode = HttpStatusCode.BadRequest
 ) : AppError(customMessage, status)
 
@@ -56,7 +57,7 @@ class SerializationError(
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.BadRequest`.
  */
 class ValidationError(
-  customMessage: String = "Error in validation of fields.",
+  customMessage: String = Message.GENERAL_VALIDATION_ERROR.toString(),
   status: HttpStatusCode = HttpStatusCode.BadRequest
 ) : AppError(customMessage, status)
 
@@ -67,7 +68,7 @@ class ValidationError(
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
  */
 class NullEnvironmentVariable(
-  customMessage: String = "Missing an environment variable in server (null)",
+  customMessage: String = Message.GENERAL_MISSING_ENV_VAR_ERROR.toString(),
   status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : AppError(customMessage, status)
 
@@ -78,7 +79,7 @@ class NullEnvironmentVariable(
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.InternalServerError`.
  */
 class EmptyEnvironmentVariable(
-  customMessage: String = "Missing an environment variable in server (empty)",
+  customMessage: String = Message.GENERAL_EMPTY_ENV_VAR_ERROR.toString(),
   status: HttpStatusCode = HttpStatusCode.InternalServerError
 ) : AppError(customMessage, status)
 
@@ -89,6 +90,6 @@ class EmptyEnvironmentVariable(
  * @param status The HTTP status code associated with the error. The default is `HttpStatusCode.UnprocessableEntity`.
  */
 class UnavailableCdnService(
-  customMessage: String = "CDN Unavailable",
+  customMessage: String = Message.GENERAL_CDN_UNAVAILABLE.toString(),
   status: HttpStatusCode = HttpStatusCode.UnprocessableEntity
 ) : AppError(customMessage, status)

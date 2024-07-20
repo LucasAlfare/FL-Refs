@@ -3,6 +3,7 @@ package com.lucasalfare.flrefs.main.routes
 import com.lucasalfare.flrefs.main.UnavailableDatabaseRepository
 import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.Users
+import com.lucasalfare.flrefs.main.localization.Message
 import com.lucasalfare.flrefs.main.matchHashed
 import com.lucasalfare.flrefs.main.model.User
 import com.lucasalfare.flrefs.main.model.dto.LoginRequestDTO
@@ -20,7 +21,7 @@ fun Route.loginRoute() {
 
     getUserByEmail(request.email).let {
       if (!request.plainPassword.matchHashed(it.hashedPassword))
-        return@get call.respond(HttpStatusCode.Unauthorized, "Wrong email or password. Try again later.")
+        return@get call.respond(HttpStatusCode.Unauthorized, Message.AUTHENTICATION_ERROR.toString())
 
       return@get call.respond(HttpStatusCode.OK, JwtProvider.generateJWT(it.email))
     }
@@ -38,6 +39,6 @@ private suspend fun getUserByEmail(email: String) = AppDB.exposedQuery {
         )
       }
   } catch (e: Exception) {
-    throw UnavailableDatabaseRepository("Can not to get/select an User from database.")
+    throw UnavailableDatabaseRepository(Message.DB_USER_SELECTION_ERROR.toString())
   }
 }

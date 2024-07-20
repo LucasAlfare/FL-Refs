@@ -33,11 +33,14 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
+import java.util.*
 
 /**
  * Variable representing the CDN uploader instance.
  */
 lateinit var cdnUploader: CdnUploader
+
+lateinit var currentLocale: Locale
 
 /**
  * Main function to start the application.
@@ -57,6 +60,7 @@ suspend fun main() {
   }
 
   cdnUploader = GithubCdnUploader
+  currentLocale = Locale.ENGLISH
 
   // Start embedded server
   embeddedServer(Netty, port = 80) {

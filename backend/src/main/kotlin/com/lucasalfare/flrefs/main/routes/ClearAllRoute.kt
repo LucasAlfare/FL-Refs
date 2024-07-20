@@ -4,6 +4,7 @@ import com.lucasalfare.flrefs.main.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
 import com.lucasalfare.flrefs.main.data.exposed.Users
+import com.lucasalfare.flrefs.main.localization.Message
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -39,7 +40,7 @@ fun Route.clearAllItemsRoute() {
         )
       }
       // TODO: include call to CDN clear
-      call.respond(HttpStatusCode.OK, "All tables were cleared.")
+      call.respond(HttpStatusCode.OK, Message.DB_CLEAR_SUCCESS.toString())
     }
   }
 }
