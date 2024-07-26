@@ -1,5 +1,8 @@
-package com.lucasalfare.githubwrapper.main
+package com.lucasalfare.githubwrapper.main.infra
 
+import com.lucasalfare.githubwrapper.main.domain.Committer
+import com.lucasalfare.githubwrapper.main.domain.GithubUploadRequestDTO
+import com.lucasalfare.githubwrapper.main.domain.GithubUploadResponseDTO
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -7,34 +10,9 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-
-
-@Serializable
-data class Committer(val name: String, val email: String)
-
-@Serializable
-data class GithubUploadRequestDTO(
-  val message: String,
-  val committer: Committer,
-  val content: String
-)
-
-@Serializable
-data class GithubUploadResponseContent(
-  val name: String,
-  val path: String,
-  @SerialName("download_url") val downloadUrl: String
-)
-
-@Serializable
-data class GithubUploadResponseDTO(
-  val content: GithubUploadResponseContent
-)
 
 object GithubHelper {
 

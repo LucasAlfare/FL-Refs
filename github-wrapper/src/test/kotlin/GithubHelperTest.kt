@@ -1,4 +1,4 @@
-import com.lucasalfare.githubwrapper.main.GithubHelper
+import com.lucasalfare.githubwrapper.main.infra.GithubHelper
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.contentnegotiation.*

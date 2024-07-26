@@ -12,7 +12,7 @@ import com.lucasalfare.flrefs.main.initDatabase
 import com.lucasalfare.flrefs.main.initOther
 import com.lucasalfare.flrefs.main.usecase.DataServices.cdnUploader
 import com.lucasalfare.flrefs.main.usecase.UserServices
-import com.lucasalfare.githubwrapper.main.GithubHelper
+import com.lucasalfare.githubwrapper.main.infra.GithubHelper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*

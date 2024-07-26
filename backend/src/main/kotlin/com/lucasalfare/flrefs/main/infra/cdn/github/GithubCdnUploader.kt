@@ -5,8 +5,8 @@ import com.lucasalfare.flrefs.main.domain.EnvsLoader.loadEnv
 import com.lucasalfare.flrefs.main.domain.UnavailableCdnService
 import com.lucasalfare.flrefs.main.domain.localization.Message
 import com.lucasalfare.flrefs.main.domain.model.CdnUploadResult
-import com.lucasalfare.githubwrapper.main.GithubHelper
-import com.lucasalfare.githubwrapper.main.GithubUploadResponseDTO
+import com.lucasalfare.githubwrapper.main.domain.GithubUploadResponseDTO
+import com.lucasalfare.githubwrapper.main.infra.GithubHelper
 
 /**
  * GitHub CDN uploader implementation using GitHub API for file uploads.
