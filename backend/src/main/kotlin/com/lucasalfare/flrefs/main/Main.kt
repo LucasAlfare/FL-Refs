@@ -1,45 +1,25 @@
 package com.lucasalfare.flrefs.main
 
-import com.lucasalfare.flrefs.main.EnvsLoader.databasePasswordEnv
-import com.lucasalfare.flrefs.main.EnvsLoader.databasePoolSizeEnv
-import com.lucasalfare.flrefs.main.EnvsLoader.databaseUrlEnv
-import com.lucasalfare.flrefs.main.EnvsLoader.databaseUsernameEnv
-import com.lucasalfare.flrefs.main.EnvsLoader.driverClassNameEnv
-import com.lucasalfare.flrefs.main.EnvsLoader.loadEnv
-import com.lucasalfare.flrefs.main.cdn.CdnUploader
-import com.lucasalfare.flrefs.main.cdn.github.GithubCdnUploader
-import com.lucasalfare.flrefs.main.data.exposed.AppDB
-import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
-import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
-import com.lucasalfare.flrefs.main.data.exposed.Users
-import com.lucasalfare.flrefs.main.data.exposed.crud.UsersCRUD
-import com.lucasalfare.flrefs.main.plugins.LargePayloadRejector
-import com.lucasalfare.flrefs.main.routes.clearAllItemsRoute
-import com.lucasalfare.flrefs.main.routes.getAllItemsRoute
-import com.lucasalfare.flrefs.main.routes.loginRoute
-import com.lucasalfare.flrefs.main.routes.uploadItemRoute
-import com.lucasalfare.flrefs.main.security.JwtProvider
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.cors.routing.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import kotlinx.serialization.json.Json
+import com.lucasalfare.flrefs.main.domain.EnvsLoader.databasePasswordEnv
+import com.lucasalfare.flrefs.main.domain.EnvsLoader.databasePoolSizeEnv
+import com.lucasalfare.flrefs.main.domain.EnvsLoader.databaseUrlEnv
+import com.lucasalfare.flrefs.main.domain.EnvsLoader.databaseUsernameEnv
+import com.lucasalfare.flrefs.main.domain.EnvsLoader.driverClassNameEnv
+import com.lucasalfare.flrefs.main.domain.EnvsLoader.loadEnv
+import com.lucasalfare.flrefs.main.infra.cdn.github.GithubCdnUploader
+import com.lucasalfare.flrefs.main.infra.data.exposed.AppDB
+import com.lucasalfare.flrefs.main.infra.data.exposed.ImagesInfos
+import com.lucasalfare.flrefs.main.infra.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.infra.data.exposed.Users
+import com.lucasalfare.flrefs.main.infra.data.exposed.repository.ExposedImagesInfosRepository
+import com.lucasalfare.flrefs.main.infra.data.exposed.repository.ExposedImagesUrlsRepository
+import com.lucasalfare.flrefs.main.infra.data.exposed.repository.ExposedUsersRepository
+import com.lucasalfare.flrefs.main.infra.ktor.KtorLauncher
+import com.lucasalfare.flrefs.main.infra.thumbnail.thumbnailator.ThumbnailatorThumbnailGenerator
+import com.lucasalfare.flrefs.main.usecase.DataServices
+import com.lucasalfare.flrefs.main.usecase.UserServices
 import org.jetbrains.exposed.sql.SchemaUtils
 import java.util.*
-
-/**
- * Variable representing the CDN uploader instance.
- */
-lateinit var cdnUploader: CdnUploader
 
 lateinit var currentLocale: Locale
 
@@ -50,35 +30,13 @@ suspend fun main() {
   // Initialize database connection and create tables if missing
   initDatabase()
   initOther()
-  startServer()
-}
 
-internal fun startServer() {
-  // Start embedded server
-  embeddedServer(Netty, port = 80) {
-    configureAuthentication()
-    configureCORS()
-    configureSerialization()
-    configureStatusPages()
-    configureLargePayloadRejector()
-    configureRouting()
-  }.start(wait = true)
-}
-
-internal suspend fun initOther() {
-  runCatching {
-    // TODO: get true email and password from ENV
-    UsersCRUD.create(
-      email = loadEnv("ADMIN_EMAIL"),
-      plainPassword = loadEnv("ADMIN_PLAIN_PASSWORD")
-    )
-  }
-
-  cdnUploader = GithubCdnUploader
-  currentLocale = Locale.ENGLISH
+  KtorLauncher.start()
 }
 
 fun initDatabase() {
+
+  // TODO: abstract this.
   AppDB.initialize(
     jdbcUrl = databaseUrlEnv,
     jdbcDriverClassName = driverClassNameEnv,
@@ -94,102 +52,20 @@ fun initDatabase() {
   }
 }
 
-/**
- * Configures routing for the application.
- */
-internal fun Application.configureRouting() {
-  routing {
-    loginRoute()
-    getAllItemsRoute()
-    authenticate("refs-auth-jwt") {
-      uploadItemRoute()
-      clearAllItemsRoute()
-    }
+internal suspend fun initOther() {
+  currentLocale = Locale.ENGLISH
 
-    get("/hello") {
-      call.respondText("Hello! We are healthy!! :)")
-    }
-  }
-}
+  DataServices.cdnUploader = GithubCdnUploader
+  DataServices.imageRepository = ExposedImagesInfosRepository
+  DataServices.imageUrlsRepository = ExposedImagesUrlsRepository
+  DataServices.thumbnailGenerator = ThumbnailatorThumbnailGenerator
+  UserServices.userRepository = ExposedUsersRepository
 
-internal fun Application.configureAuthentication() {
-  val appRef = this
-  install(Authentication) {
-    jwt("refs-auth-jwt") {
-      realm = EnvsLoader.loadEnv("JWT_AUTH_REALM")
-
-      verifier(JwtProvider.verifier)
-
-      validate { credential ->
-        if (credential.payload.getClaim("email").asString() != "") JWTPrincipal(credential.payload)
-        else null
-      }
-
-      challenge { _, _ ->
-        appRef.log.warn(
-          "Detected attempt of access a authenticate route with bad JWT Token from ${call.request.origin.remoteHost}"
-        )
-        call.respond(HttpStatusCode.Unauthorized, "Unable to access the system: Unauthorized!")
-      }
-    }
-  }
-}
-
-internal fun Application.configureLargePayloadRejector() {
-  install(LargePayloadRejector)
-}
-
-/**
- * Configures CORS settings for the application.
- */
-internal fun Application.configureCORS() {
-  install(CORS) {
-    anyHost()
-    allowHeader(HttpHeaders.ContentType)
-    allowHeader(HttpHeaders.Authorization)
-    allowMethod(HttpMethod.Post)
-    allowMethod(HttpMethod.Get)
-    allowMethod(HttpMethod.Delete)
-    allowMethod(HttpMethod.Put)
-  }
-}
-
-/**
- * Configures content serialization settings for the application.
- */
-internal fun Application.configureSerialization() {
-  install(ContentNegotiation) {
-    json(Json { isLenient = false; ignoreUnknownKeys = true })
-  }
-}
-
-/**
- * Configures error handling and status pages for the application.
- */
-internal fun Application.configureStatusPages() {
-  install(StatusPages) {
-    exception<Throwable> { call, cause ->
-      when (val rootError = cause.customRootCause()) {
-        is AppError -> {
-          val finalErrorMessage = "${rootError.javaClass.name}: [${rootError.customMessage}]"
-          call.application.log.error("$finalErrorMessage. Stacktrace: {}", cause.stackTraceToString())
-
-          call.respond(
-            status = rootError.status,
-            message = finalErrorMessage
-          )
-        }
-
-        else -> {
-          val finalErrorMessage = "${cause.javaClass.name}: [${cause.message ?: ""}]"
-          call.application.log.error("$finalErrorMessage. Stacktrace: {}", cause.stackTraceToString())
-
-          call.respond(
-            status = HttpStatusCode.InternalServerError,
-            message = finalErrorMessage
-          )
-        }
-      }
-    }
+  // always tries to create admin registry
+  runCatching {
+    UserServices.create(
+      email = loadEnv("ADMIN_EMAIL"),
+      plainPassword = loadEnv("ADMIN_PLAIN_PASSWORD")
+    )
   }
 }
