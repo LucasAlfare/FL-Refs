@@ -1,4 +1,4 @@
-package com.lucasalfare.githubwrapper.main.domain
+package com.lucasalfare.githubwrapper.main.domain.model.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

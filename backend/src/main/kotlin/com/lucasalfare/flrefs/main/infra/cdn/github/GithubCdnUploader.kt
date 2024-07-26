@@ -5,7 +5,7 @@ import com.lucasalfare.flrefs.main.domain.EnvsLoader.loadEnv
 import com.lucasalfare.flrefs.main.domain.UnavailableCdnService
 import com.lucasalfare.flrefs.main.domain.localization.Message
 import com.lucasalfare.flrefs.main.domain.model.CdnUploadResult
-import com.lucasalfare.githubwrapper.main.domain.GithubUploadResponseDTO
+import com.lucasalfare.githubwrapper.main.domain.model.dto.GithubUploadResponseDTO
 import com.lucasalfare.githubwrapper.main.infra.GithubHelper
 
 /**

@@ -1,8 +1,8 @@
 package com.lucasalfare.githubwrapper.main.infra
 
-import com.lucasalfare.githubwrapper.main.domain.Committer
-import com.lucasalfare.githubwrapper.main.domain.GithubUploadRequestDTO
-import com.lucasalfare.githubwrapper.main.domain.GithubUploadResponseDTO
+import com.lucasalfare.githubwrapper.main.domain.model.dto.Committer
+import com.lucasalfare.githubwrapper.main.domain.model.dto.GithubUploadRequestDTO
+import com.lucasalfare.githubwrapper.main.domain.model.dto.GithubUploadResponseDTO
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
