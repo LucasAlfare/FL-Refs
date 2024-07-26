@@ -1,14 +1,18 @@
-import com.lucasalfare.flrefs.main.*
-import com.lucasalfare.flrefs.main.cdn.CdnUploadResult
-import com.lucasalfare.flrefs.main.cdn.CdnUploader
-import com.lucasalfare.flrefs.main.data.exposed.ImagesInfos
-import com.lucasalfare.flrefs.main.data.exposed.ImagesUrls
-import com.lucasalfare.flrefs.main.data.exposed.crud.UsersCRUD
-import com.lucasalfare.flrefs.main.localization.Message
-import com.lucasalfare.flrefs.main.model.dto.ItemResponseDTO
-import com.lucasalfare.flrefs.main.model.dto.LoginRequestDTO
-import com.lucasalfare.flrefs.main.model.dto.UploadRequestDTO
-import com.lucasalfare.githubwrapper.main.GithubHelper
+import com.lucasalfare.flrefs.main.domain.CdnUploader
+import com.lucasalfare.flrefs.main.domain.UnavailableCdnService
+import com.lucasalfare.flrefs.main.domain.localization.Message
+import com.lucasalfare.flrefs.main.domain.model.CdnUploadResult
+import com.lucasalfare.flrefs.main.domain.model.dto.ItemResponseDTO
+import com.lucasalfare.flrefs.main.domain.model.dto.LoginRequestDTO
+import com.lucasalfare.flrefs.main.domain.model.dto.UploadRequestDTO
+import com.lucasalfare.flrefs.main.infra.data.exposed.ImagesInfos
+import com.lucasalfare.flrefs.main.infra.data.exposed.ImagesUrls
+import com.lucasalfare.flrefs.main.infra.ktor.*
+import com.lucasalfare.flrefs.main.initDatabase
+import com.lucasalfare.flrefs.main.initOther
+import com.lucasalfare.flrefs.main.usecase.DataServices.cdnUploader
+import com.lucasalfare.flrefs.main.usecase.UserServices
+import com.lucasalfare.githubwrapper.main.infra.GithubHelper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
@@ -36,7 +40,7 @@ class TestRoutes {
     initDatabase()
     runBlocking {
       initOther()
-      runCatching { UsersCRUD.create(testingEmail, testingPlainPassword) }
+      runCatching { UserServices.create(testingEmail, testingPlainPassword) }
     }
     cdnUploader = FakeCdnGithubUploader
   }
