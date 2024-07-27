@@ -44,5 +44,5 @@ class UnavailableCdnService(
 ) : AppError(customMessage)
 
 class AuthorizationError(
-  customMessage: String = Message.GENERAL_CDN_UNAVAILABLE.toString()
+  customMessage: String = Message.GENERAL_UNAUTHORIZED_ERROR.toString()
 ) : AppError(customMessage)
