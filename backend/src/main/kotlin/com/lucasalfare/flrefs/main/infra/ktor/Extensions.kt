@@ -1,8 +1,6 @@
 package com.lucasalfare.flrefs.main.infra.ktor
 
-import com.lucasalfare.flrefs.main.domain.AppError
-import com.lucasalfare.flrefs.main.domain.EnvsLoader
-import com.lucasalfare.flrefs.main.domain.customRootCause
+import com.lucasalfare.flrefs.main.domain.*
 import com.lucasalfare.flrefs.main.infra.ktor.plugins.LargePayloadRejector
 import com.lucasalfare.flrefs.main.infra.ktor.routes.clearAllItemsRoute
 import com.lucasalfare.flrefs.main.infra.ktor.routes.getAllItemsRoute
@@ -102,8 +100,17 @@ internal fun Application.configureStatusPages() {
           val finalErrorMessage = "${rootError.javaClass.name}: [${rootError.customMessage}]"
           call.application.log.error("$finalErrorMessage. Stacktrace: {}", cause.stackTraceToString())
 
+          val nextStatus = when (rootError) {
+            is UnavailableDatabaseRepository, is SerializationError -> HttpStatusCode.InternalServerError
+            is NullEnvironmentVariable, is EmptyEnvironmentVariable -> HttpStatusCode.InternalServerError
+            is UnavailableCdnService -> HttpStatusCode.NotAcceptable
+            is BadRequest -> HttpStatusCode.BadRequest
+            is AuthorizationError -> HttpStatusCode.Unauthorized
+            else -> HttpStatusCode.InternalServerError
+          }
+
           call.respond(
-//            status = rootError.status,
+            status = nextStatus,
             message = finalErrorMessage
           )
         }

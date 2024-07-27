@@ -1,5 +1,6 @@
 package com.lucasalfare.flrefs.main.infra.ktor.routes
 
+import com.lucasalfare.flrefs.main.domain.AuthorizationError
 import com.lucasalfare.flrefs.main.domain.localization.Message
 import com.lucasalfare.flrefs.main.domain.model.dto.LoginRequestDTO
 import com.lucasalfare.flrefs.main.infra.ktor.security.JwtProvider
@@ -17,9 +18,9 @@ fun Route.loginRoute() {
 
     UserServices.readByLogin(request)?.let {
       if (!request.plainPassword.matchHashed(it.hashedPassword))
-        return@post call.respond(HttpStatusCode.Unauthorized, Message.AUTHENTICATION_ERROR.toString())
+        throw AuthorizationError(Message.AUTHENTICATION_ERROR.toString())
       return@post call.respond(HttpStatusCode.OK, JwtProvider.generateJWT(it.email))
     }
-    return@post call.respond(HttpStatusCode.Unauthorized, Message.AUTHENTICATION_ERROR.toString())
+    throw AuthorizationError(Message.AUTHENTICATION_ERROR.toString())
   }
 }
