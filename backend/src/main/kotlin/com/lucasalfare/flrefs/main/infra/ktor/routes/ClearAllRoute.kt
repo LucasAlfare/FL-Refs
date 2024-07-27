@@ -1,10 +1,12 @@
 package com.lucasalfare.flrefs.main.infra.ktor.routes
 
+import com.lucasalfare.flrefs.main.domain.EnvsLoader
 import com.lucasalfare.flrefs.main.domain.localization.Message
 import com.lucasalfare.flrefs.main.infra.data.exposed.AppDB
 import com.lucasalfare.flrefs.main.infra.data.exposed.ImagesInfos
 import com.lucasalfare.flrefs.main.infra.data.exposed.ImagesUrls
 import com.lucasalfare.flrefs.main.infra.data.exposed.Users
+import com.lucasalfare.flrefs.main.usecase.UserServices
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -36,10 +38,19 @@ fun Route.clearAllItemsRoute() {
         }
 
         SchemaUtils.createMissingTablesAndColumns(
+          Users,
           ImagesInfos,
           ImagesUrls
         )
       }
+
+      runCatching {
+        UserServices.create(
+          email = EnvsLoader.loadEnv("ADMIN_EMAIL"),
+          plainPassword = EnvsLoader.loadEnv("ADMIN_PLAIN_PASSWORD")
+        )
+      }
+
       // TODO: include call to CDN clear
       call.respond(HttpStatusCode.OK, Message.DB_CLEAR_SUCCESS.toString())
     }
