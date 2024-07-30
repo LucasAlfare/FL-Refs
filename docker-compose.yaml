@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  minha-api:
+  fl-refs:
     container_name: fl-refs-container
     build: .
     # variables values obtained from local/private .env file
