@@ -1,7 +1,14 @@
-# Refs 🖼
+```ascii
+ ██╗ ██╗     ██████╗ ███████╗███████╗███████╗
+████████╗    ██╔══██╗██╔════╝██╔════╝██╔════╝
+╚██╔═██╔╝    ██████╔╝█████╗  █████╗  ███████╗
+████████╗    ██╔══██╗██╔══╝  ██╔══╝  ╚════██║
+╚██╔═██╔╝    ██║  ██║███████╗██║     ███████║
+ ╚═╝ ╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝     ╚══════╝
+```
 
 This repository contains a complete backend to handle the upload of images to some kind of `CDN`. It also handles the
-ability to get the stored data as well.
+ability to retrieve the stored data as well.
 
 At this point, we are using GutHub as the main `CDN` target, but this should be updated to a new dedicated `CDN` service
 soon.
@@ -17,7 +24,7 @@ This server is being built using:
 - `Thumbnailator` to generate thumbnails from original images;
 - `Docker` to containerize builds.
 
-We are also using `GitHub` itself as a huge basic `CDN` service. Depending on the usage of this, `GitHub` works fine
+Again, we are using `GitHub` itself as a huge basic `CDN` service. Depending on the usage of this, `GitHub` works fine
 to store that kind of images. In the future, we should to include more implementations of external `CDN` services, such
 as that provided by `Amazon` or even by other files repositories, such as `MediaFire`.
 
