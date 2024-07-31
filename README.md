@@ -58,7 +58,7 @@ This project can be executed with `Docker`. To do this, clone this project local
 containing the necessary environment fields for the application. The final file should look like this:
 
 ```properties
-DB_JDBC_URL=som url for JDBC driver connect in a database server 
+DB_JDBC_URL=some url for JDBC driver connect in a database server
 DB_JDBC_DRIVER=the targeted JDBC driver used
 DB_USERNAME=the username to access the database
 DB_PASSWORD=the password to access the database
@@ -83,3 +83,17 @@ This will build an image of the project and run it in a container by
 docker, as described in [Dockerfile](Dockerfile) and [docker-compose.yaml](docker-compose.yaml).
 
 After container is up, the server can be accessed through the port `80`.
+
+### Deploy ❇
+
+Below are described the current deployment details of this project. Note that both are experimental, just for
+demonstration or even debugging. Due to this, any kind of information related to each one can change at any time.
+
+#### Backend 🏗
+Since this project can be executed by `Docker`, deploy is easy if we have access to services/VPSs that supports it. For
+demonstration purposes, we have this system running in the free [Render](https://render.com/) service through the URL
+`https://fl-refs.onrender.com`.
+
+#### Frontend 🖥
+This project doesn't focus specifically in frontend clients, however we have a huge basic front end that consumes the
+above [Render](https://render.com/) service in the following this [GitHub Page](https://lucasalfare.github.io/).
